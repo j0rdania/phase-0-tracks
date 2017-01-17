@@ -12,3 +12,11 @@ section.job {
 ul.accomplishments {
   font-size: .8em;
 }
+
+h3:hover {
+  color: hotpink;
+}
+
+ol > li:hover {
+color: green;
+}
