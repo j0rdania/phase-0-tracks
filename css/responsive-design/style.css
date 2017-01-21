@@ -1,3 +1,8 @@
+body {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
 blockquote {
   border-left: 5px solid blue;
   padding: 15px;
@@ -9,9 +14,22 @@ cite {
   margin-top: 10px;
 }
 
+#main_wildflowers {
+  width: 80%;
+  display: inline-block;
+  vertical-align: top;
+}
+
 #external-links ul {
   list-style-type: none;
   padding-left: 0px;
+}
+
+#external-links {
+  width: 20%;
+  display: inline-block;
+  vertical-align: top;
+
 }
 
 /* you're welcome to edit the
@@ -29,4 +47,17 @@ figure {
 figcaption {
   font-style: italic;
   text-align: right;
+}
+
+@media screen and (max-width: 500px) {
+  h1{
+  font-size: 75%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #purple_flowers {
+  height: 75%;
+  width: 75%;
+  }
 }
