@@ -1,3 +1,26 @@
-body  {
-  background: pink;
+.column-1 {
+    float: left;
+    width: 40%;
+    margin: auto;
+    padding: 5%;
+   background-color: pink;
+}
+
+.column-2 {
+    float: right;
+    width: 40%;
+    margin: auto;
+    padding: 5%;
+    background-color: #2c3e50;
+}
+
+footer {
+  padding-top: 5%;
+  text-align: center;
+  clear: both;
+}
+
+header {
+  text-align: center;
+  margin: 5%;
 }
