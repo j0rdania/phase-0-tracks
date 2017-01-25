@@ -11,3 +11,21 @@ h. Now you are in the elevator. If there are people in there with you, space you
 i. Think about the floor number that you want to go. If there is a person blocking the panel with the numbers on it, ask them to press the button with that number for you. Otherwise, press it yourself.
 j. Each time the elevator doors open, look at the wall next to the elevator door. There should be a number there indicating the floor of the building you are on. If that number matches your desired floor number, step out of the elevator. If not, stay in the elevator and repeat this step until you arrive at your floor and step out of the elevator.
 k. As you step out, if there are any people still in the elevator, smile, and wish them a good day.
+
+
+Algorithm for Jordan to Get From Jordan’s House on Bainbridge Island to an Appointment in Downtown Seattle
+
+a. Estimate how long it will take to walk from Colman Dock in Seattle to destination address (buy an iphone, subscribe to a data plan, turn on the phone, install an application called waze, start the wake application, type in the destination address, type in “Colman Dock” as the originating address, specify “walking” as the transportation mode, and calculate the average walking time)
+b. Subtract the estimated walking time from the appointment time. This is the “Must be at Colman Dock By” time.
+c. Subtract 35 minutes from the “Must be at Colman Dock by” time. (35 minutes is the ferry journey crossing time).
+d. Subtract an additional 10 minutes to allow time to board the ferry. This is the “Must be on Boat” time.
+e. Look at the ferry schedule, and choose the ferry that is at or just before the “Must be on Boat” time. This is the “Target Ferry Departure” time. 
+f. Subtract 21 minutes from the “Target Ferry Departure” time. (21 minutes is the walking time from Jordan’s house to the Bainbridge terminal). This is the “Must Leave Jordan’s House By” time.
+g. 30 minutes before the “Must Leve Jordan’s House By” time, take the dog for a walk. Start an iPhone timer upon departure. Continue walking the dog (away from the house) until either: the dog has done her business, or the time on the iPhone timer multiplied by 2 (round trip dog walking time) + 5 minutes (time to take leash off dog, grab purse, and lock the house) is equal to the “Must Leave Jordan’s House By” time.
+h. Return the dog to the house, pat dog on head, take her leash off, grab purse, and lock the house. 
+i. Walk to the Bainbridge Terminal.
+j. When the announcement says it is time to board the ferry, walk on the ferry.
+k. When the ferry arrives at Colman Dock in Seattle, walk off the ferry.
+l. Walk to your appointment. 
+m. Take the elevator, using the "How to Use an Elevator" instructions, above.
+n. Upon arrival, announce, “Good day. I am here for my appointment, and I am on time.”
