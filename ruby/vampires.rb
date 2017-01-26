@@ -1,3 +1,4 @@
+#interview employee
 puts "What is your name?"
 emp_name=gets.chomp
 
@@ -13,10 +14,10 @@ valid_answer=false
 while valid_answer==false
   garlic_answer=gets.chomp.upcase
   if garlic_answer.start_with? 'Y'
-    order_garlic_bread=true
+    will_eat_garlic_bread=true
     valid_answer=true
   elsif garlic_answer.start_with? 'N'
-    order_garlic_bread=false
+    will_eat_garlic_bread=false
     valid_answer=true
   else
     puts "Please enter Y or N"
@@ -37,3 +38,48 @@ while valid_answer==false
     puts "Please enter Y or N"
   end
 end
+
+#determine if new employee is a vampire
+
+status=nil
+#if employee got age right and is willing to eat garlic bread or sign up for insurance -> probably not a vampire
+#determine correct age for year of birth
+today_date= Time.now
+year_span_bt_dob_and_today = (today_date.year - emp_year_born)
+# depending on the month and day of the employee's birth date, there would be two valid ages. for example, 
+# my birthday is June 8, 1967. Between Jan. 1, 2017
+# and June 7, 2017, I am 49. but between June 8, 2017 and Dec. 31, 2017, I am 50. (2017-1967=50)
+if (year_span_bt_dob_and_today == emp_age) | ((year_span_bt_dob_and_today - 1) == emp_age)
+  valid_age_entered=true
+else 
+  valid_age_entered=false
+end 
+if valid_age_entered && will_eat_garlic_bread
+  status='Probably not a vampire.'
+  puts status
+end
+
+# if the employee got their age wrong and (hates garlic or does not want insurance) -> probably a vampire
+if !valid_age_entered && (!will_eat_garlic_bread | !wants_insurance)
+  status='Probably a vampire.'
+  puts status
+end
+
+# if the employee got their age wrong and hates garlic and does not want insurance) -> almost certainly a vampire
+if !valid_age_entered && !will_eat_garlic_bread && !wants_insurance
+  status='Almost certainly a vampire.'
+  puts status
+end
+
+# if name is Drake Cula or Tu Fang -> definitely a vampire
+if (emp_name=='Drake Cula') | (emp_name=='Tu Fang')
+  status='Definitely a vampire.'
+  puts status
+end
+
+# if none of the above conditions met -> results inconclusive
+if status==nil
+  status='Results inconclusive'
+  puts status
+end
+
