@@ -40,17 +40,14 @@ puts "gsub: " + "Stop! You’re under arrest!".gsub("Stop! You’re under arrest
 puts "gsub!: " + "Stop! You’re under arrest!".gsub!("Stop! You’re under arrest!","STOP! YOU’RE UNDER ARREST!")
 puts "replace: " + "Stop! You’re under arrest!".replace("STOP! YOU’RE UNDER ARREST!")
 
-
 # "the usual".<???>
 #=> "the usual suspects"
 puts "gsub: " + "the usual".gsub("the usual","the usual suspects")
 puts "gsub!: " + "the usual".gsub!("the usual","the usual suspects")
 puts "replace: " + "the usual".replace("the usual suspects")
 puts "concat: " + "the usual".concat(' suspects')
-
-
-# " suspects".<???>
-# => "the usual suspects"
+puts "insert: " + "the ususal".insert(-1,' suspects')
+puts "ljust: " + "the usual".ljust(18,' suspects')
 
 # "The case of the disappearing last letter".<???>
 # => "The case of the disappearing last lette"
