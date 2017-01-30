@@ -4,14 +4,28 @@
 # When there's more than one suspect who could have
 # committed the crime, add additional calls to prove it.
 
-puts "iNvEsTiGaTiOn".swapcase
+puts "swapcase: " + "iNvEsTiGaTiOn".swapcase
 # => “InVeStIgAtIoN”
 
-puts "iNvEsTiGaTiOn".swapcase!
+puts "swapcase!: " + "iNvEsTiGaTiOn".swapcase!
 # => “InVeStIgAtIoN”
 
-# "zom".<???>
+puts "gsub: " + "zom".gsub("o","oo")
 # => “zoom”
+puts "gsub!: " + "zom".gsub!("o","oo")
+# => “zoom”
+puts "replace with zoom: " + "zom".replace("zoom")
+# => “zoom”
+puts "insert index pos 1: " + "zom".insert(1,"o")
+# => “zoom”
+puts "insert index pos 2: " + "zom".insert(2,"o")
+# => “zoom”
+puts "sub: " + "zom".sub("o","oo")
+# => “zoom”
+puts "sub!: " + "zom".sub!("o","oo")
+# => “zoom”
+ 
+
 
 # "enhance".<???>
 # => "    enhance    "
