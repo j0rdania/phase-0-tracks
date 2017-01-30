@@ -32,6 +32,13 @@ puts "double check replace with begin and end chars: " + "1" + "enhance".replace
 
 # "Stop! You’re under arrest!".<???>
 # => "STOP! YOU’RE UNDER ARREST!"
+puts "upcase: " + "Stop! You’re under arrest!".upcase
+puts "upcase!: " + "Stop! You’re under arrest!".upcase!
+puts "gsub: " + "Stop! You’re under arrest!".gsub("Stop! You’re under arrest!","STOP! YOU’RE UNDER ARREST!")
+puts "gsub!: " + "Stop! You’re under arrest!".gsub!("Stop! You’re under arrest!","STOP! YOU’RE UNDER ARREST!")
+puts "replace: " + "Stop! You’re under arrest!".replace("STOP! YOU’RE UNDER ARREST!")
+
+
 
 # "the usual".<???>
 #=> "the usual suspects"
