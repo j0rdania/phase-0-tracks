@@ -11,8 +11,10 @@ puts "swapcase!: " + "iNvEsTiGaTiOn".swapcase!
 
 # "zom".<???>
 # => "zoom"
-puts "gsub: " + "zom".gsub("o","oo")
-puts "gsub!: " + "zom".gsub!("o","oo")
+puts "gsub o with oo: " + "zom".gsub("o","oo")
+puts "gsub! o with oo: " + "zom".gsub!("o","oo")
+puts "gsub zom with zoom: " + "zom".gsub("zom","zoom")
+puts "gsub! zom with zoom: " + "zom".gsub!("zom","zoom")
 puts "replace: " + "zom".replace("zoom")
 puts "insert index pos 1: " + "zom".insert(1,"o")
 puts "insert index pos 2: " + "zom".insert(2,"o")
@@ -39,9 +41,13 @@ puts "gsub!: " + "Stop! You’re under arrest!".gsub!("Stop! You’re under arre
 puts "replace: " + "Stop! You’re under arrest!".replace("STOP! YOU’RE UNDER ARREST!")
 
 
-
 # "the usual".<???>
 #=> "the usual suspects"
+puts "gsub: " + "the usual".gsub("the usual","the usual suspects")
+puts "gsub!: " + "the usual".gsub!("the usual","the usual suspects")
+puts "replace: " + "the usual".replace("the usual suspects")
+puts "concat: " + "the usual".concat(' suspects')
+
 
 # " suspects".<???>
 # => "the usual suspects"
