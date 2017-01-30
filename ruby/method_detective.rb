@@ -4,31 +4,31 @@
 # When there's more than one suspect who could have
 # committed the crime, add additional calls to prove it.
 
+# "iNvEsTiGaTiOn".<???>
+# => "InVeStIgAtIoN"
 puts "swapcase: " + "iNvEsTiGaTiOn".swapcase
-# => “InVeStIgAtIoN”
-
 puts "swapcase!: " + "iNvEsTiGaTiOn".swapcase!
-# => “InVeStIgAtIoN”
 
+# "zom".<???>
+# => "zoom"
 puts "gsub: " + "zom".gsub("o","oo")
-# => “zoom”
 puts "gsub!: " + "zom".gsub!("o","oo")
-# => “zoom”
-puts "replace with zoom: " + "zom".replace("zoom")
-# => “zoom”
+puts "replace: " + "zom".replace("zoom")
 puts "insert index pos 1: " + "zom".insert(1,"o")
-# => “zoom”
 puts "insert index pos 2: " + "zom".insert(2,"o")
-# => “zoom”
 puts "sub: " + "zom".sub("o","oo")
-# => “zoom”
 puts "sub!: " + "zom".sub!("o","oo")
-# => “zoom”
- 
-
 
 # "enhance".<???>
 # => "    enhance    "
+puts "center: " +  "enhance".center(15,padstr=' ')
+puts "double check center with begin and end chars: " + "1" +"enhance".center(15,padstr=' ') + "1"
+puts "gsub: " +  "enhance".gsub('enhance','    enhance    ')
+puts "double check gsub with begin and end chars: " + "1" + "enhance".gsub('enhance','    enhance    ') + "1"
+puts "gsub!: " +  "enhance".gsub!('enhance','    enhance    ')
+puts "double check gsub! with begin and end chars: " + "1" + "enhance".gsub!('enhance','    enhance    ') + "1"
+puts "replace: " +  "enhance".replace('    enhance    ')
+puts "double check replace with begin and end chars: " + "1" + "enhance".replace('    enhance    ') + "1"
 
 # "Stop! You’re under arrest!".<???>
 # => "STOP! YOU’RE UNDER ARREST!"
