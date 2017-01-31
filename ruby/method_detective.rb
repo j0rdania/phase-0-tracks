@@ -102,9 +102,13 @@ puts "squeeze: " + "Elementary,    my   dear        Watson!".squeeze('  ')
 # "z".<???>
 # => 122 
 # (What is the significance of the number 122 in relation to the character z?)
-# this detective converted the integer to a string for display purposes only
+# Detective NOTE: this detective converted the integer to a string for display purposes only
 # 122 is the ascii code that is mapped to the lowercase letter z
 puts "to_i: " + ("z".ord).to_s
 
 # "How many times does the letter 'a' appear in this string?".<???>
 # => 4
+# Detective NOTE: this detective converted the integer to a string for display purposes only
+
+puts "count: " + ("How many times does the letter 'a' appear in this string?".count('a')).to_s()
+
