@@ -95,10 +95,16 @@ puts "sub!: " + "The case of the disappearing first letter".sub!("The case of th
 
 # "Elementary,    my   dear        Watson!".<???>
 # => "Elementary, my dear Watson!"
+# Detective NOTE: you can use the gsub, gsub!,replace, sub and sub! commands as in previous examples.
+# only the interesting alternative solutions are shown here
+puts "squeeze: " + "Elementary,    my   dear        Watson!".squeeze('  ')
 
 # "z".<???>
 # => 122 
 # (What is the significance of the number 122 in relation to the character z?)
+# this detective converted the integer to a string for display purposes only
+# 122 is the ascii code that is mapped to the lowercase letter z
+puts "to_i: " + ("z".ord).to_s
 
 # "How many times does the letter 'a' appear in this string?".<???>
 # => 4
