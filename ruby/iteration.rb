@@ -1,4 +1,4 @@
-#release 0
+##############    RELEASE 0    #####################
 puts "RELEASE 0"
 #define method that will take block code as argument
 def display_favorite_things
@@ -13,7 +13,8 @@ end
 display_favorite_things{|thing1,thing2, thing3| puts "My favorite things are: #{thing1}, #{thing2}, and #{thing3}!"}
 #print blank line
 puts
-#release 1
+
+###################     RELEASE 1   ##################
 puts "RELEASE 1"
 # declare junk food Array
 junk_food = [
@@ -68,11 +69,15 @@ puts "fruits after .map method call:"
 puts fruits
 #add blank line
 puts
-# RELEASE 2
+
+##################   RELEASE 2    ##################################
 puts "RELEASE 2"
+
+###### ARRAYS  #######
+puts "methods on ARRAYS:"
 # create array to hold modified arrays
 mod_numbers= []
-# create array
+# create array with integers
 numbers = [5,1,3,7,9,2,3,4,5,6,3,7,9,1,0,6,22]
 #display starting array
 puts "starting array is "
@@ -99,3 +104,19 @@ puts "remove items until (value <> 4) is false  - drop_while method"
 mod_numbers = numbers.drop_while {|w| w != 4 }
 puts "array after drop_while! method:"
 puts mod_numbers
+
+########  HASHES  ########
+puts "methods on HASHES:"
+# create hash to hold modified hashes
+mod_fav_letters= {}
+# create hash with people and their favorite letters
+letters = {
+  jordan: "a'",
+  betty: "d",
+  frank: "b",
+  william: "x",
+  simon: "r",
+  ben: "w",
+  arthur: "u",
+  shirley: "q"
+}
