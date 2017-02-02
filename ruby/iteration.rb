@@ -40,15 +40,15 @@ favorite_foods = {
     trixie: "kibble"
   }
 #iterate through fruits array and print each value 
-puts "Fruits:"
+puts "Fruits (by way of .each call on array):"
 fruits.each do |fruit|
   puts "#{fruit}"
 end
-#print hash before.each method call
-puts "Favorite Foods after .each method call:"
+#print hash before .each method call
+puts "Favorite Foods hash:"
 puts favorite_foods
 #iterate through favorite foods hash and print each key/value pair 
-puts "Favorite foods:"
+puts "Favorite foods (by way of .each call on hash):"
 favorite_foods.each do |person,fave_food|
   puts "#{person} likes #{fave_food}"
 end
@@ -56,6 +56,7 @@ end
 puts "fruits before .map method call:"
 puts fruits
 #iterate through fruits array and change values in place to junk food
+puts "Now, get ready, folks. We are going to use the .map! method on the fruits to magically change them from healthy to unhealthy foods!"
 junk_food_index = -1
 fruits.map! do |fruit|
   #increment junk food array index 
