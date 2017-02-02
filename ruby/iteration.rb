@@ -90,16 +90,22 @@ mod_numbers = numbers.delete_if { |x| x >=8 }
 puts "array after delete_if method:"
 puts mod_numbers
 #filter for only items that satisfy criteria
+# preserve previous changes
+numbers = mod_numbers
 puts "filter for only items that are 3 or above - first method - select"
 mod_numbers = numbers.select {|y| y >= 3 }
 puts "array after select! method:"
 puts mod_numbers
 #filter for only items that satisfy criteria - second method
+# preserve previous changes
+numbers=mod_numbers
 puts "filter for only items that are 5 or less - second method - keep_if"
 mod_numbers = numbers.keep_if {|z| z <= 5 }
 puts "array after keep_if! method:"
 puts mod_numbers
 #remove items until condition in block evaluates to false
+# preserve previous changes
+numbers=mod_numbers
 puts "remove items until (value <> 4) is false  - drop_while method"
 mod_numbers = numbers.drop_while {|w| w != 4 }
 puts "array after drop_while! method:"
@@ -110,8 +116,9 @@ puts "methods on HASHES:"
 # create hash to hold modified hashes
 mod_fav_letters= {}
 # create hash with people and their favorite letters
-letters = {
-  jordan: "a'",
+fav_letters = {
+  jordan: "a",
+  jane: "k",
   betty: "d",
   frank: "b",
   william: "x",
@@ -120,3 +127,32 @@ letters = {
   arthur: "u",
   shirley: "q"
 }
+# display starting hash
+puts "starting hash is "
+puts fav_letters
+# add calls to hashes for four conditions
+# delete items that meet a certain criteria
+puts "delete entries for letters greater than 'u' using delete_if method"
+fav_letters.delete_if { |person,fav_letter| fav_letter  > "u"}
+puts "hash after delete_if method:"
+puts fav_letters
+# declare hash to hold modified hash
+mod_fav_letters = {}
+# filter for items that meet a certain criteria
+# we are going to look at the first letter of the key
+puts "filter for names that don't start with 'f' using select method"
+mod_fav_letters = fav_letters.select { |person,fav_letter| person[0] != "f"}
+puts "hash after select method (names starting with f should be gone):"
+puts mod_fav_letters
+# filter for items that meet a certain criteria using another method
+# we are going to look at the first letter of the key
+puts "filter for names that don't start with 'f' using keep_if method"
+mod_fav_letters = fav_letters.keep_if { |person,fav_letter| person[0] != "b"}
+puts "hash after keep_if method (names starting with b should be gone, but frank should be back):"
+puts mod_fav_letters
+# remove items until a condition in block evaluates to false 
+puts "remove items until a condition in block evaluates to false - remove entries until the key name does NOT start with j - using reject method"
+# note: this does not work properly. it instead removes all items where the block evaluates to false
+fav_letters.reject {|person,fav_letter| !(person[0] !="j")}
+
+
