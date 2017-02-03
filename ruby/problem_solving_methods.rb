@@ -60,3 +60,52 @@ end
 #test 
 puts "Fib(6): #{fib(6)}" 
 puts "Fib100: #{fib(100).last}"
+
+#####   RELEASE 2  #########
+## bubble sort method 
+## sort an array of numbers so that they are in sequential order, L to R
+## return the sorted array 
+
+## start with the leftmost array element 
+## compare it to its next door right neighbor and swap if necessary
+## repeat, moving to the right of the array, until the "next door right neighbor" just
+## processed was the last element to be sorted - that element is now "sorted" and does
+## not need to be visited again - this is one iteration
+
+## iterate, sorting to one less array position each time. 
+## the last iteration will be when position one and two are compared and position 2 has been delcared "sorted"
+
+def bubble_sort(array)
+  # get number of elements in array to sort
+  array_length=array.length
+  # for the first iteration we need to go all the way to the last element of the array
+  total_compares_to_do_this_iteration = array_length -1
+  
+  while total_compares_to_do_this_iteration >=1 
+    # start new iteration 
+    # start at first element 
+    left_index=0 
+    # go to the right, comparing each set of numbers along the way and swapping if necessary; stop when we have reached the last "already sorted" element 
+    while left_index <= (total_compares_to_do_this_iteration -1) do
+      if array[left_index] > array[left_index + 1]
+        # value on right exceeds value on left, swap
+        value1 = array[left_index]
+        value2 = array[left_index + 1]
+        array[left_index] = value2
+        array[left_index + 1] = value1
+      end 
+      # increment left index so that we keep moving to the right for our compares
+      left_index += 1 
+    end 
+    # decrement total compares  - one less for next iteration since the rightmost value
+    # in this iteration has been declared "sorted"
+    total_compares_to_do_this_iteration = (total_compares_to_do_this_iteration - 1)
+  end
+  # return array
+  array
+end
+
+# test
+list_of_numbers_to_sort = [3,5,2,1,12,3,2]
+puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
+puts "#{bubble_sort(list_of_numbers_to_sort)}" 
