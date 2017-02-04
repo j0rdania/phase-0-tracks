@@ -28,6 +28,10 @@ def is_upper? (letter)
 end
 
 def get_next_vowel (vowel_to_change)
+  # this method will take a vowel and return the next sequential vowel
+  # u will become a
+  # case will be preserved
+
   # record upper case status
   upper_case_status=is_upper?(vowel_to_change)
   # convert to lower case for determining next vowel
@@ -54,6 +58,11 @@ def get_next_vowel (vowel_to_change)
 end
 
 def get_next_letter (letter_to_change)
+  # this method will get the next sequential vowel if this is a vowel
+  # if this is a consonant, this method will return the next sequential consonant
+  # z and Z become a and A, respectively
+  # case will be preserved
+
   # record upper case status
   upper_case_status=is_upper?(letter_to_change)
   # convert to lower case for determining next vowel
@@ -75,3 +84,17 @@ def get_next_letter (letter_to_change)
   end 
 end
 
+def swap_two_words (in_word)
+  # this method will take a string with two words and swap the two words - assumes there is one space between exactly two words
+  # return a string with the two words swapped
+
+  # convert string of two words to array with two elements: word1 in element 0 and word2 in element 1
+  word_holder=in_word.split(' ')
+  # swap array positions so that word1 will now be in element1 and word2 will now be in element 0
+  word1=word_holder[0]
+  word2=word_holder[1]
+  word_holder[0]=word2
+  word_holder[1]=word1
+  # put words back together into a string (there will be a space between the two words)
+  word_holder.join(' ')
+end
