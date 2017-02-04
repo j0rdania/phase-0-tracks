@@ -103,31 +103,31 @@ def swap_two_words (in_word)
   # convert string of two words to array with two elements: word1 in element 0 and word2 in element 1
   word_holder=in_word.split(' ')
   #make sure there are exactly two elements in the array
-  if word_holder.length !=2
-    return 'error'
-  end
-  # swap array positions so that word1 will now be in element1 and word2 will now be in element 0
-  word1=word_holder[0]
-  word2=word_holder[1]
-  word_holder[0]=word2
-  word_holder[1]=word1
-  # put words back together into a string (there will be a space between the two words)
-  word_holder.join(' ')
+  if word_holder.length != 2
+    'error'
+  else
+    # swap array positions so that word1 will now be in element1 and word2 will now be in element 0
+    word1=word_holder[0]
+    word2=word_holder[1]
+    word_holder[0]=word2
+    word_holder[1]=word1
+    # put words back together into a string (there will be a space between the two words)
+    word_holder.join(' ')
+  end 
 end
 
 def encode_spy_name(in_name)
   # swap first and last name, return string with swapped name
   # there will be a space between the two names
- 
 
   # validate spy name to encode; if not a string, return "Please enter a string"; if two names were not entered, return "Please enter one first name, a space, and one last name"
   #check to make sure argument is a string
-  if in_name.class != 'String'
+  if in_name.class != String
     return 'Please enter a string'
   end
   # attempt to swap the two names, checking to make sure there were exactly two names
   in_name = swap_two_words(in_name)
-  if in_name='error'
+  if in_name=='error'
     return 'Please enter one first name, a space, and one last name'
   end
   # break the name into letters
