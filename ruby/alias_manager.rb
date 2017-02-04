@@ -24,7 +24,7 @@ def is_upper? (letter)
     true
   else
     false
-  end if
+  end
 end
 
 def get_next_vowel (vowel_to_change)
@@ -61,27 +61,39 @@ def get_next_letter (letter_to_change)
   # this method will get the next sequential vowel if this is a vowel
   # if this is a consonant, this method will return the next sequential consonant
   # z and Z become a and A, respectively
+  # a space will remain a space
   # case will be preserved
 
-  # record upper case status
-  upper_case_status=is_upper?(letter_to_change)
-  # convert to lower case for determining next vowel
-  letter_to_change=letter_to_change.downcase
-  new_letter=''
-  case letter_to_change
-    when 'z'
-      new_letter='a'
-    when is_vowel?
-      new_letter=letter_to_change.get_next_vowel(letter_to_change)
-    else
-      new_letter=new_letter.next
-  end
-  # convert letter back to upcase if it was upper case initially
-  if upper_case_status then
-    new_letter.upcase 
+  # is this a space?
+  if letter_to_change == ' '
+    # return the space character
+    letter_to_change
   else
-    new_letter
-  end 
+    # record upper case status
+    upper_case_status=is_upper?(letter_to_change)
+    # convert to lower case for determining next vowel
+    letter_to_change=letter_to_change.downcase
+    new_letter=''
+    if letter_to_change == 'z'
+      new_letter='b'
+    elsif is_vowel?(letter_to_change)
+      # go to the next vowel in the alphabet
+      new_letter=get_next_vowel(letter_to_change)
+    else
+      #go to the next letter in the alphabet
+      new_letter=letter_to_change.next
+      # check to see if we just changed a consonant to a vowel. if so, go to next letter
+      if is_vowel?(new_letter)
+        new_letter=new_letter.next
+      end 
+    end
+    # convert letter back to upcase if it was upper case initially
+    if upper_case_status then
+      new_letter.upcase 
+    else
+      new_letter
+    end 
+  end
 end
 
 def swap_two_words (in_word)
@@ -97,4 +109,15 @@ def swap_two_words (in_word)
   word_holder[1]=word1
   # put words back together into a string (there will be a space between the two words)
   word_holder.join(' ')
+end
+
+def encode_spy_name(in_name)
+  # swap first and last name
+  in_name = swap_two_words(in_name)
+  # break the name into letters
+  name_to_encode = in_name.split('')
+  # replace each letter with the next vowel or consonant
+  name_to_encode.map! {|letter| get_next_letter(letter)}
+  # put letters back together
+  name_to_encode.join('')
 end
