@@ -31,6 +31,7 @@ def get_next_vowel (vowel_to_change)
   # record upper case status
   upper_case_status=is_upper?(vowel_to_change)
   # convert to lower case for determining next vowel
+  vowel_to_change= vowel_to_change.downcase
   new_letter=''
   case vowel_to_change
     when 'a'
@@ -50,9 +51,27 @@ def get_next_vowel (vowel_to_change)
   else
     new_letter
   end 
-end 
-
-  # is this letter upper case?
-  # if so, then return upper case version of
-
 end
+
+def get_next_letter (letter_to_change)
+  # record upper case status
+  upper_case_status=is_upper?(letter_to_change)
+  # convert to lower case for determining next vowel
+  letter_to_change=letter_to_change.downcase
+  new_letter=''
+  case letter_to_change
+    when 'z'
+      new_letter='a'
+    when is_vowel?
+      new_letter=letter_to_change.get_next_vowel(letter_to_change)
+    else
+      new_letter=new_letter.next
+  end
+  # convert letter back to upcase if it was upper case initially
+  if upper_case_status then
+    new_letter.upcase 
+  else
+    new_letter
+  end 
+end
+
