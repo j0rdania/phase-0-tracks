@@ -73,7 +73,7 @@ puts "Fib100: #{fib(100).last}"
 ## not need to be visited again - this is one iteration
 
 ## iterate, sorting to one less array position each time. 
-## the last iteration will be when position one and two are compared and position 2 has been delcared "sorted"
+## the last iteration will be when position one and two are compared and position 2 has been declared "sorted"
 
 def bubble_sort(array)
   # get number of elements in array to sort
@@ -109,3 +109,25 @@ end
 list_of_numbers_to_sort = [3,5,2,1,12,3,2]
 puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
 puts "#{bubble_sort(list_of_numbers_to_sort)}" 
+
+list_of_numbers_to_sort = [6,3,2,1]
+puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
+puts "#{bubble_sort(list_of_numbers_to_sort)}" 
+
+list_of_numbers_to_sort = []
+puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
+puts "#{bubble_sort(list_of_numbers_to_sort)}" 
+
+list_of_numbers_to_sort = [1,3,8,10,11]
+puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
+puts "#{bubble_sort(list_of_numbers_to_sort)}" 
+
+list_of_numbers_to_sort = [3,5,-2,1,12,3,2]
+puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
+puts "#{bubble_sort(list_of_numbers_to_sort)}" 
+
+list_of_numbers_to_sort = [3,5,2,1,12.2,3,12.1]
+puts "list of numbers to sort prior to sort method: #{list_of_numbers_to_sort}"
+puts "#{bubble_sort(list_of_numbers_to_sort)}" 
+
+
