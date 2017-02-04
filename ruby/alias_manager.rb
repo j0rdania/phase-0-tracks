@@ -120,15 +120,11 @@ def encode_spy_name(in_name)
   # swap first and last name, return string with swapped name
   # there will be a space between the two names
 
-  # validate spy name to encode; if not a string, return "Please enter a string"; if two names were not entered, return "Please enter one first name, a space, and one last name"
-  #check to make sure argument is a string
-  if in_name.class != String
-    return 'Please enter a string'
-  end
+  # validate spy name to encode; if two names were not entered, return "Please enter one first name, a space, and one last name"
   # attempt to swap the two names, checking to make sure there were exactly two names
   in_name = swap_two_words(in_name)
   if in_name=='error'
-    return 'Please enter one first name, a space, and one last name'
+    return 'Please enter one first name, a space, and one last name: '
   end
   # break the name into letters
   name_to_encode = in_name.split('')
@@ -137,3 +133,25 @@ def encode_spy_name(in_name)
   # put letters back together
   name_to_encode.join('')
 end
+
+## RELEASE 1
+# add user interface
+# allow user to enter a name and get a fake name back - user can enter a series of names until they type 'quit'
+# display error message if user does not enter valid input
+time_to_quit=false
+while !time_to_quit
+  puts 'Please enter spy name: '
+  name_to_encode=gets.chomp
+  if name_to_encode.downcase == 'quit'
+    time_to_quit=true
+  else
+    puts encode_spy_name(name_to_encode)
+  end
+end
+
+
+
+
+
+
+
