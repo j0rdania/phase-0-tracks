@@ -124,20 +124,25 @@ def encode_spy_name(in_name)
   # attempt to swap the two names, checking to make sure there were exactly two names
   in_name = swap_two_words(in_name)
   if in_name=='error'
-    return 'Please enter one first name, a space, and one last name: '
-  end
-  # break the name into letters
-  name_to_encode = in_name.split('')
-  # replace each letter with the next vowel or consonant
-  name_to_encode.map! {|letter| get_next_letter(letter)}
-  # put letters back together
-  name_to_encode.join('')
+    'error'
+  else
+    # break the name into letters
+    name_to_encode = in_name.split('')
+    # replace each letter with the next vowel or consonant
+    name_to_encode.map! {|letter| get_next_letter(letter)}
+    # put letters back together
+    name_to_encode.join('')
+  end 
 end
 
-## RELEASE 1
-# add user interface
+## RELEASE 1 and 2
+# add user interface; store data in data structure; when user quits, display all data
 # allow user to enter a name and get a fake name back - user can enter a series of names until they type 'quit'
 # display error message if user does not enter valid input
+
+# use an array (called spies) of hashes (called agent) to hold real names and fake names. two keys: real_name and fake_name
+# declare spies array
+spies=[]
 time_to_quit=false
 while !time_to_quit
   puts 'Please enter spy name: '
@@ -145,9 +150,26 @@ while !time_to_quit
   if name_to_encode.downcase == 'quit'
     time_to_quit=true
   else
-    puts encode_spy_name(name_to_encode)
+    # encode name
+    fake_name = encode_spy_name(name_to_encode)
+    if fake_name=='error'
+      puts 'Please enter one first name, a space, and one last name: '
+    else
+      # add array element with real name and fake name in hash
+      spies.push({
+        real_name: name_to_encode,
+        fake_name: fake_name
+        })
+      # print fake name
+      puts fake_name
+     end 
   end
 end
+# iterate through the array, printing out each real and fake name
+spies.each do |agent|
+  puts "#{agent[:fake_name]} is actually #{agent[:real_name]}!"
+end
+
 
 
 
