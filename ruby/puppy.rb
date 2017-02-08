@@ -56,6 +56,10 @@ class Puppy
     puts "I just ate #{food_to_eat}!"
   end
 
+  def initialize
+    puts "Initializing new puppy instance..."
+  end
+
 
 end
 
