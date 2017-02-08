@@ -52,6 +52,10 @@ class Puppy
     return human_years / 7
   end
 
+  def eat(food_to_eat)
+    puts "I just ate #{food_to_eat}!"
+  end
+
 
 end
 
@@ -62,3 +66,4 @@ trix.speak(1)
 trix.speak(3)
 trix.roll_over
 trix.dog_years(50)
+trix.eat('kibble')
