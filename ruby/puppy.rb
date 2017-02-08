@@ -59,6 +59,9 @@ class Puppy
 
 end
 
+# test puppy behaviors
+# note: it is assumed that the user enters valid input.
+# in real life, error checking would be present
 trix = Puppy.new
 trix.fetch('biscuit')
 trix.speak(0)
