@@ -27,9 +27,10 @@ class Puppy
     toy
   end
 
+  
+  def speak(num_barks)
   # speak method - takes an integer and woofs that many times
   # add carriage return to last woof
-  def speak(num_barks)
     bark_count = 0
     while bark_count < (num_barks - 1)
       print "Woof! "
@@ -42,8 +43,14 @@ class Puppy
   end
 
   def roll_over
+    # just print *rolls over*
     puts "*rolls over*"
   end 
+
+  def dog_years(human_years)
+    # convert human years to dog years by dividing by 7
+    return human_years / 7
+  end
 
 
 end
@@ -54,3 +61,4 @@ trix.speak(0)
 trix.speak(1)
 trix.speak(3)
 trix.roll_over
+trix.dog_years(50)
