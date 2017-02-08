@@ -78,3 +78,6 @@ jordan_list = [
   add_item_to_list(jordan_list,'candybars')
   puts "Our awesome method:"
   print_list(jordan_list)
+
+
+  create_list('linsey_list','eggs milk cucumbers sausages')
