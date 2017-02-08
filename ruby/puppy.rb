@@ -16,4 +16,18 @@
 #   eat
 #   bark
 #   sleep
-#   whine              
+#   whine    
+
+# define Puppy class
+
+class Puppy
+  
+  def fetch(toy)
+    puts "I brought back the #{toy}!"     
+    toy
+  end
+
+end
+
+trix = Puppy.new
+trix.fetch('biscuit')
