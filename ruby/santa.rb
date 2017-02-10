@@ -3,7 +3,7 @@
 # define Santa class
 class Santa
   # use shortcut to declare age and ethnicity variables readable from outside of class
-  attr_reader :age,:ethnicity,:gender
+  attr_reader :age,:ethnicity
   # use shortcut to declare gender variable as writable and readable from outside class
   attr_accessor :gender
 
