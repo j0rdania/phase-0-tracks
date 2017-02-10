@@ -111,3 +111,8 @@ puts "Seat recommendation for this passenger:  #{mary.find_seat(1)}"
 tom = Ferry_rider.new('Tom Meek as Mouse Jones')
 puts "Seat recommendation for this passenger:  #{tom.find_seat(9)}"
 
+mitch.jump_overboard('Mitch')
+
+for counter in 1..50
+  new_rider = Ferry_rider.new('New Rider')
+end
