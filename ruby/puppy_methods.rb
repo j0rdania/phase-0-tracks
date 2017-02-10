@@ -113,6 +113,10 @@ puts "Seat recommendation for this passenger:  #{tom.find_seat(9)}"
 
 mitch.jump_overboard('Mitch')
 
-for counter in 1..50
-  new_rider = Ferry_rider.new('New Rider')
+# create 50 instances of Ferry_rider class
+# and store in an array
+people_on_board = []
+for counter in 0..49
+  rider_name = 'Ferry Rider #' + counter.to_s
+  people_on_board.push(Ferry_rider.new(rider_name))
 end
