@@ -2,6 +2,10 @@
 
 # define Santa class
 class Santa
+  # use shortcut to declare age and ethnicity variables readable from outside of class
+  attr_reader :age,:ethnicity,:gender
+  # use shortcut to declare gender variable as writable and readable from outside class
+  attr_accessor :gender
 
   # define initialize method
   def initialize(gender,ethnicity)
@@ -25,11 +29,6 @@ class Santa
   def print_reindeer_ranking
     puts @reindeer_ranking
   end
-  
-  # getter method to access gender from outside class
-  def gender
-    @gender
-  end
 
   # three attribute changing methods:
   # method to add one year to age
@@ -43,26 +42,6 @@ class Santa
     @reindeer_ranking.delete(reindeer_name)
     # add it to the end of the array
     @reindeer_ranking.push(reindeer_name)
-  end
-
-  # method to allow @gender to be reassigned from outside the class
-  def gender=(new_gender)
-    @gender = new_gender
-  end
-
-  # getter method to allow age to be accessed from outside the class
-  def age
-    @age
-  end
-  
-  # getter method to allow ethnicity to be accessed from outside the class
-  def ethnicity
-    @ethnicity
-  end
-  
-   # getter method to access gender from outside class
-  def gender
-    @gender
   end
 end
 
