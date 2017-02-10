@@ -87,13 +87,14 @@ class Ferry_rider
   def find_seat(introvert_level)
     # this method will inspect the introvert level of this passenger (10 is very introverted, 1 is very extroverted), and it will 
     # choose the seat that this passenger should look for
+    # the seat recommendation will be printed out
     case introvert_level
       when 1..4
-        return 'sit in galley with talkers'
+        puts "Seat recommendation for this passenger: sit in galley with talkers"
       when 5..8
-        return 'sit in back of boat'
+       puts "Seat recommendation for this passenger: sit in back of boat"
       else
-        return 'go upstairs to quiet room'
+        puts "Seat recommendation for this passenger: go upstairs to quiet room"
     end
   end
 
@@ -105,18 +106,28 @@ class Ferry_rider
 end
 
 mitch = Ferry_rider.new('Mitch Middle of Road Meckle')
-puts "Seat recommendation for this passenger: #{mitch.find_seat(5)}" 
+mitch.find_seat(5) 
 mary = Ferry_rider.new('Mary Ready for Fun Smith')
-puts "Seat recommendation for this passenger:  #{mary.find_seat(1)}" 
+mary.find_seat(1)
 tom = Ferry_rider.new('Tom Meek as Mouse Jones')
-puts "Seat recommendation for this passenger:  #{tom.find_seat(9)}"
+tom.find_seat(9)
 
 mitch.jump_overboard('Mitch')
 
 # create 50 instances of Ferry_rider class
-# and store in an array
+# and store in an array of Ferry_rider instances
+# the rider names start at position 1, the array indexes start at position 0
 people_on_board = []
-for counter in 0..49
+for counter in 1..50
   rider_name = 'Ferry Rider #' + counter.to_s
   people_on_board.push(Ferry_rider.new(rider_name))
+end
+# for each Ferry_rider instance stored in the array, call pick_seat and jump_overboard methods
+# assign random introvert levels for now - choose an integer between 1 and 10 
+rider_number=1
+people_on_board.each do |rider|
+  introvert_level_for_this_rider = rand(1..10)
+  rider.find_seat(introvert_level_for_this_rider)
+  rider.jump_overboard('Ferry Rider #' + rider_number.to_s)
+  rider_number += 1
 end
