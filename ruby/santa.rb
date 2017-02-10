@@ -77,6 +77,28 @@ puts "1st Santa's gender before change: #{santas[0].gender}"
 santas[0].gender = 'female'
 puts "1st Santa's gender after change: #{santas[0].gender}"
 puts "1st Santa's ethnicity: #{santas[0].ethnicity}"
+puts
 
-
+# create lots of santas with randomly generated attributes
+example_genders = ["agender", "female", "bigender", "male", "female", "gender fluid", "N/A"]
+example_ethnicities = ["black", "Latino", "white", "Japanese-African", "prefer not to say", "Mystical Creature (unicorn)", "N/A"]
+for santa_limit in 0..250
+  # pick random # to get array index - use that to define ethnicity
+  target_ethnicity = example_ethnicities[rand(0..(example_ethnicities.length - 1))]
+  target_gender = example_genders[rand(0..(example_genders.length - 1))]
+  santas.push(Santa.new(target_gender,target_ethnicity))
+  # set this santa's age to a randomly generated number between 0 and 140
+  # normally, I would either add an age parameter to the initialize method
+  # or give write access to the age attribute with attr_accessor; however,
+  # as an exercise, I will use the celebrate_birthday method to advance the age
+  target_age=rand(0..140)
+  # puts "target age for santa #{santa_limit} is: #{target_age}"
+  until santas[santa_limit].age == target_age
+    santas[santa_limit].celebrate_birthday
+  end
+  puts "This Santa's age after lots of birthdays: #{santas[santa_limit].age}"
+  puts "This Santa's gender: #{santas[santa_limit].gender}"
+  puts "This Santa's ethnicity: #{santas[santa_limit].ethnicity}"
+  puts
+end
 
