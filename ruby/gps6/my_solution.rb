@@ -4,7 +4,8 @@
 # We spent [#] hours on this challenge.
 
 # EXPLANATION OF require_relative
-#
+# require_relative allows the code in this file to see the data/code that is in the referenced file.
+# the "relative" part makes it so this code starts looking for the referenced file in the directory where this file is located.
 #
 require_relative 'state_data'
 
