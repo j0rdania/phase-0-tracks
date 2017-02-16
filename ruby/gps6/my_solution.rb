@@ -11,7 +11,6 @@ require_relative 'state_data'
 
 class VirusPredictor
 
-
   def initialize(state_of_origin, population_density, population)
     @state = state_of_origin
     @population = population
@@ -27,19 +26,20 @@ class VirusPredictor
 
   def predicted_deaths
     # predicted deaths is solely based on population density
-    # consider using case statement here - play with the math; look at structure - repeated .floor
-    # and assigning # of deaths
-    if @population_density >= 200
-      number_of_deaths = (@population * 0.4).floor
-    elsif @population_density >= 150
-      number_of_deaths = (@population * 0.3).floor
-    elsif @population_density >= 100
-      number_of_deaths = (@population * 0.2).floor
-    elsif @population_density >= 50
-      number_of_deaths = (@population * 0.1).floor
-    else
-      number_of_deaths = (@population * 0.05).floor
+    case @population_density
+      when 0..49
+        multiplier_factor = 0.05
+      when 50..99
+        multiplier_factor = 0.1
+      when 100..149
+        multiplier_factor = 0.2
+      when 150..199
+        multiplier_factor = 0.3
+      else
+        multiplier_factor = 0.4
     end
+    
+    number_of_deaths = (@population * multiplier_factor).floor
 
     print "#{@state} will lose #{number_of_deaths} people in this outbreak"
 
@@ -48,8 +48,6 @@ class VirusPredictor
   def speed_of_spread    #in months
     # We are still perfecting our formula here. The speed is also affected
     # by additional factors we haven't added into this functionality.
-
-    # use case statement here
     case @population_density
       when 0..49
         speed = 2.5
