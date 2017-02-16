@@ -10,17 +10,20 @@
 
 var reverse = function(input_string) {
   // create a result string variable that starts as an empty string
-  var result_string = ''
+  var result_string = '';
   // create array of characters in the input_string
-  var input_array = input_string.split('')
+  var input_array = input_string.split('');
   // subtract one from the length of the array because of zero indexing
   // start at end of array, continue until we've processed the first array
   // element, and decrement the index each iteration
   for (var i = (input_array.length - 1); i >= 0; i--) {
-      result_string = result_string.concat(input_array[i])
+      result_string = result_string.concat(input_array[i]);
   }
-  return result_string
-}
+  return result_string;
+};
 
 ////////////  DRIVER CODE    ///////////////////////
-console.log(reverse('hello'))
+var reversed_string = reverse('hello');
+var jordan_likes_java = true;
+if (jordan_likes_java) {console.log(reversed_string)}
+
