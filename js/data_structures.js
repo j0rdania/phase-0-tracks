@@ -38,7 +38,7 @@ function Car(make,model,year,color) {
   this.model = model;
   this.year = year;
   this.color = color;
-  this.go = function() {console.log('The ' + this.year + this.make + this.model + ' is on its way!');};
+  this.go = function() {console.log('The ' + this.year + ' ' + this.make + ' ' + this.model + ' is on its way!');};
 }
 // declare array of makes
 var makes = ['Acura','Toyota','GM'];
@@ -55,4 +55,5 @@ var cars_for_sale = [];
 for (var i = 0; i < makes.length; i++) {
   cars_for_sale.push(new Car(makes[i],models[i],years[i],colors[i]));
   console.log(cars_for_sale[i]);
+  cars_for_sale[i].go();
 }
