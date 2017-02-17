@@ -57,3 +57,36 @@ for (var i = 0; i < makes.length; i++) {
   console.log(cars_for_sale[i]);
   cars_for_sale[i].go();
 }
+
+// RESERACH RESULTS
+// If you wanted to loop through the keys and values of an object, how would you do that? (There are a few ways to accomplish this, and some gotchas that can happen depending on your approach.)
+
+// method A:  You could use a for...in loop:
+// for (proprety_var in object_name) {
+//   code here  - property_var is the property name for this element; the value for this element may be accessed 
+//   by using object_name[property_var]
+// }
+// the for...in loop will iterate over enumerable properties, which include properties from the prototype 
+// (inherited properties); so you would need to use the .hasOwnProperty attribute of each property
+// to make sure you want to include the property in your processing. 
+// Also, with this technique, the order will be arbitrary, so this technique would not work if you cared about the order.
+// 
+// method B:
+// you could use Object.keys(obj), which lists all enumerable own property keys of an object. 
+// It returns an array of all of the object's keys, so you could then use a for loop to step through the array
+//
+// method C:
+// you could use Object.getOwnPropertyNames(), which lists all own property keys of an object, including the non-enumerable ones.
+// but you'd have to weed out the non-enumerables if you didn't want them.
+
+
+
+// Are there advantages to using constructor functions to create objects? Disadvantages? 
+// Constructor functions allow you to easily create many objects of one type. The new objects that are created will have 
+// specific properties, and default values can be set. If you define a method inside the constructor, it will get
+// re-declared each time a new instance is created, which has memory implications(you can use prototype method, instead, to avoid this, but then the method would
+// not have access to local private variables.) A simple literal object (with no methods) might be better than using a constructor function, which is slightly more
+// complicated. Also, it appears there are implications about private vs. public access - a literal object declaration will be public.
+
+
+
