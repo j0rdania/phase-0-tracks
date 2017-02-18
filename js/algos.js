@@ -1,13 +1,7 @@
-// write a function that takes an array of words or phrases and returns
-// the longest word or phrase in the array. So if we gave your 
-// function the array of ["long phrase","longest phrase","longer phrase"],
-// it would return "longest phrase". This is a logical reasoning challenge, 
-// so try to reason through this based on what you already know, 
-// rather than Googling the fanciest solution or looking up built-in 
-// sorting functions. Note that "some string".length will do what you 
-// expect in JS.
-// Add driver code that tests your function on a few arrays.
-
+/////////////////    RELEASE 0     //////////////////////////////////////
+// function that takes an array of words or phrases and returns
+// the longest word or phrase in the array. If the function was given the 
+// array of ["long phrase","longest phrase","longer phrase"],it would return "longest phrase". 
 
 // declare function, accepting an array of words/phrases as an input parameter
 var find_longest_string = function (array_of_phrases) {
@@ -26,11 +20,38 @@ var find_longest_string = function (array_of_phrases) {
 // return the longest_string
 return longest_string
 }
- 
 /////////    DRIVER code       /////////////
 console.log('soooooo long results: ' + find_longest_string(['hello','i am soooooooo long','hi','greetings']));
 console.log('empty array results: ' + find_longest_string([]));
 console.log('longest at end of array results: ' + find_longest_string(['i am short','me too','not me I am super long']));
 console.log('longest at begin of array results:' + find_longest_string(['very very long','short']));
 console.log('only one element results: ' + find_longest_string(['just me']))  ;
+
+
+//////////////   RELEASE 1      /////////////////////////////////////////
+write a function that takes two objects and checks to see if the objects share at least 
+one key-value pair. (You'll keep adding to this file, so we suggest grouping functions 
+  at the top and testing at the bottom of the file.) If we called your function with 
+{name: "Steven", age: 54} and {name: "Tamir", age: 54}, the function would return true, 
+because at least one key-value pair matches between the two objects. If no pairs match 
+(and keep in mind that the two objects may not even have any of the same keys), the function 
+should return false. 
+
+// declare function that takes two objects as parameters
+
+// cycle through all keys of object1, checking to see if there is a matching key in object2.
+// if a matching key is found, if the values for the matching key in object1 and object2 are equal, return true
+// otherwise(matching key not found or matching key found but value not equal), continue cycling through the keys
+// of object1. if we get all the way through looking at all of object1's keys and no match has been found, return false.
+
+
+
+
+
+
+
+
+
+
+
 
