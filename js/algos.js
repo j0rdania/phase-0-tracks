@@ -13,9 +13,12 @@ var find_longest_string = function (array_of_phrases) {
   for (var i = 0; i < array_of_phrases.length; i++) {
     // compare each array element's length to the longest_string's length;
     // if longer, set the longest_string variable to this array element's value
-    //console.log('in for loop, array entry is: ' + array_of_phrases[i]);
     if (array_of_phrases[i].length > longest_string.length) {
       longest_string = array_of_phrases[i];
+    }
+    // if equal, append 'and' plus this array element's value the longest_string variable
+    else if(array_of_phrases[i].length === longest_string.length) {
+      longest_string = longest_string + ' and ' + array_of_phrases[i];
     }
   }
 // return the longest_string
@@ -95,15 +98,49 @@ console.log('matching key and value result - last position (should be true): ' +
 // this function that takes an integer for length 
 // and builds/returns an array of that length that will contain random strings of random length (minimum 1 letter, max 10)
 
-// declare function that takes an integer X
-// declare an empty array Z
-// repeat this process X times:
-    // find a random number Y that will be the length of this word
-    // create a random word of length Y and push it onto array Z
-// return array Z
+// declare function that takes an integer number_entries
+var build_array = function(number_entries) {
+  // declare an alphabet array
+  var alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+  // declare an empty array that we will be returning
+  var array_to_return = [];
+  // declare a variable to hold random length of a particular word
+  var length_of_this_word;
+  // declare a variable to hold each new word
+  var new_word;
+  // declare a variable to hold a random letter
+  var random_letter;
+  // for each array entry we want to create, build a word
+  for (var j = 1; j <= number_entries;j++) {
+    // find a random number Y that will be the length of this word - Math.random gives us a floating point 
+    // number between 0 and 1, which we can multiply by 10 and round up to get a number between 1 and 10.
+    length_of_this_word = Math.ceil(Math.random() * 10);
+    // reset new_word
+    new_word = '';
+    // create a random word of length Y and push it onto array_to_return (to do this we will get Y random letters)
+    for (var k = 1; k <= length_of_this_word; k++) {
+      // to get a random letter, generate a random # between 0 and 25 (to index the alphabet)
+      // to get a random # between 0 and 25, we will take the Math.random number, multiply it by 26, and round down
+      random_letter = alphabet[Math.floor(Math.random() * 26)];
+      // add random letter to new_word
+      new_word = new_word + random_letter;
+    }
+    // push new word onto array_to_return
+    array_to_return.push(new_word);
+  }
+  return array_to_return
+}
+
+///////////////////         DRIVER code     ///////////////////////////
 
 // driver code will do the following 10 times:
 //   a. generate an array
 //   b. print an array
 //   c. feed the array to the 'longest word' function
 //   d. print the result
+for (var t = 1; t <= 10; t++) {
+  // pass a random # between 1 and 10
+  var new_array = build_array(Math.ceil(Math.random() * 10));
+  console.log(new_array);
+  console.log('The longest word is: ' + find_longest_string(new_array));
+}
