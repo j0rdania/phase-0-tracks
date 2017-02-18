@@ -29,27 +29,69 @@ console.log('only one element results: ' + find_longest_string(['just me']))  ;
 
 
 //////////////   RELEASE 1      /////////////////////////////////////////
-write a function that takes two objects and checks to see if the objects share at least 
-one key-value pair. (You'll keep adding to this file, so we suggest grouping functions 
-  at the top and testing at the bottom of the file.) If we called your function with 
-{name: "Steven", age: 54} and {name: "Tamir", age: 54}, the function would return true, 
-because at least one key-value pair matches between the two objects. If no pairs match 
-(and keep in mind that the two objects may not even have any of the same keys), the function 
-should return false. 
+// function that takes two objects and checks to see if the objects share at least one key-value pair.
+// returns true if the answer is yes, false if the answer is no
 
 // declare function that takes two objects as parameters
+var matching_key_value_pair = function (object1,object2) {
+  // cycle through all keys of object1, checking to see if there is a matching key in object2.
+  for (var key_x in object1) {
+    // cycle through object2, checking to see if the key we are trying to match is present
+    for (var key_y in object2) {
+      if (key_y === key_x)
+        // this key matches key from object1; see if the values match
+        if (object1[key_x] === object2[key_y]){
+          // key and value match; return true
+          return true;
+        }
+    }
+  }
+  // no matching key/value pairs found
+  return false;
+}
 
 // cycle through all keys of object1, checking to see if there is a matching key in object2.
 // if a matching key is found, if the values for the matching key in object1 and object2 are equal, return true
 // otherwise(matching key not found or matching key found but value not equal), continue cycling through the keys
 // of object1. if we get all the way through looking at all of object1's keys and no match has been found, return false.
 
+/////////   DRIVER code  ////////////////
+// test matching key but no matching value 
+var object1 = {
+  name: 'Jordan',
+  age: 49,
+  status: 'awesome'
+};
+var object2 = {
+  name: 'Jill',
+  age: 50,
+  status: 'very awesome'
+};
+console.log('matching key but no matching value result (should be false): ' + matching_key_value_pair(object1,object2) )
 
+// test no matching key but matching value
+var object2 = {
+  first_name: 'Jordan',
+  age_x: 50,
+  status_x: 'very awesome'
+};
+console.log('no matching key but matching value result (should be false): ' + matching_key_value_pair(object1,object2) )
 
+// test matching key and value - first position
+var object2 = {
+  name: 'Jordan',
+  age: 55,
+  status_x: 'very awesome'
+};
+console.log('matching key and value result - first position (should be true): ' + matching_key_value_pair(object1,object2) )
 
-
-
-
+// test matching key and value - last position
+var object2 = {
+  name: 'Jordan_x',
+  age: 50,
+  status: 'awesome'
+};
+console.log('matching key and value result - last position (should be true): ' + matching_key_value_pair(object1,object2) )
 
 
 
