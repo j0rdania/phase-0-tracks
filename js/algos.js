@@ -1,5 +1,6 @@
 /////////////////    RELEASE 0     //////////////////////////////////////
-// function that takes an array of words or phrases and returns
+
+// this function takes an array of words or phrases and returns
 // the longest word or phrase in the array. If the function was given the 
 // array of ["long phrase","longest phrase","longer phrase"],it would return "longest phrase". 
 
@@ -29,17 +30,18 @@ console.log('only one element results: ' + find_longest_string(['just me']))  ;
 
 
 //////////////   RELEASE 1      /////////////////////////////////////////
-// function that takes two objects and checks to see if the objects share at least one key-value pair.
+
+// this function takes two objects and checks to see if the objects share at least one key-value pair.
 // returns true if the answer is yes, false if the answer is no
 
 // declare function that takes two objects as parameters
-var matching_key_value_pair = function (object1,object2) {
-  // cycle through all keys of object1, checking to see if there is a matching key in object2.
+var matching_key_value_pair = function (object1,object2) { 
+  // cycle through all keys of object1, checking to see if there is a matching key in object2
   for (var key_x in object1) {
     // cycle through object2, checking to see if the key we are trying to match is present
     for (var key_y in object2) {
       if (key_y === key_x)
-        // this key matches key from object1; see if the values match
+        // this key matches key from object1; see if the values for these matching keys in object1 and object2 match
         if (object1[key_x] === object2[key_y]){
           // key and value match; return true
           return true;
@@ -49,11 +51,6 @@ var matching_key_value_pair = function (object1,object2) {
   // no matching key/value pairs found
   return false;
 }
-
-// cycle through all keys of object1, checking to see if there is a matching key in object2.
-// if a matching key is found, if the values for the matching key in object1 and object2 are equal, return true
-// otherwise(matching key not found or matching key found but value not equal), continue cycling through the keys
-// of object1. if we get all the way through looking at all of object1's keys and no match has been found, return false.
 
 /////////   DRIVER code  ////////////////
 // test matching key but no matching value 
@@ -93,7 +90,20 @@ var object2 = {
 };
 console.log('matching key and value result - last position (should be true): ' + matching_key_value_pair(object1,object2) )
 
+////////////////////   RELEASE 2     /////////////////////////////////////////////
 
+// this function that takes an integer for length 
+// and builds/returns an array of that length that will contain random strings of random length (minimum 1 letter, max 10)
 
+// declare function that takes an integer X
+// declare an empty array Z
+// repeat this process X times:
+    // find a random number Y that will be the length of this word
+    // create a random word of length Y and push it onto array Z
+// return array Z
 
-
+// driver code will do the following 10 times:
+//   a. generate an array
+//   b. print an array
+//   c. feed the array to the 'longest word' function
+//   d. print the result
