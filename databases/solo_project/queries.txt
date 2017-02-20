@@ -1,0 +1,79 @@
+select * from dbc_locations;
+1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+2|458 Sunnyvale-Saratoga Blvd.|Sunnyvale|CA|94087|5500|Molly|55
+3|567 Main Street|Des Moines|IA|50312|400|Steve|10
+
+sqlite> update dbc_locations set campus_director='Phillip' where location_id=2;
+sqlite> select * from students s, dbc_locations d where d.location_id = s.location;
+1|John|Smith|true||0|1|1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+2|Mary|Jones|false||0|1|1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+3|Janet|Jackson|true|A|3|2|2|458 Sunnyvale-Saratoga Blvd.|Sunnyvale|CA|94087|5500|Phillip|55
+4|Billy|Thompson|true|A-|4|3|3|567 Main Street|Des Moines|IA|50312|400|Steve|10
+
+sqlite> select s.first_name,s.last_name,d.city from students s, dbc_locations d where d.location_id = s.location;
+John|Smith|Seattle
+Mary|Jones|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
+
+sqlite> delete from students where fully_paid='false';
+sqlite> select s.first_name,s.last_name,d.city from students s, dbc_locations d where d.location_id = s.location;
+John|Smith|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
+
+
+JOINS
+Note: I've added a dbc_location row that has no students and a student who is not yet assigned to a campus. These rows will let me demonstrate the different types of joins.
+
+Here are the table contents after these rows were added:
+sqlite> select * from students;
+1|John|Smith|true||0|1
+3|Janet|Jackson|true|A|3|2
+4|Billy|Thompson|true|A-|4|3
+5|Simon|Jamison|true||2|
+
+sqlite> select * from dbc_locations;
+1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+2|458 Sunnyvale-Saratoga Blvd.|Sunnyvale|CA|94087|5500|Phillip|55
+3|567 Main Street|Des Moines|IA|50312|400|Steve|10
+4|56 A St.|Boston|MA|96122|20000|Slim|100
+
+
+An inner join gives you all rows in both tables when there is at least one match (records in either table that do not match are not included). We see below that it is equivalent to the more common "where table1.col_x = table2.col_y" statement)
+
+sqlite> select s.first_name,s.last_name,d.city from students s, dbc_locations d where d.location_id = s.location;
+John|Smith|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
+
+sqlite> select s.first_name,s.last_name,d.city from students s INNER JOIN dbc_locations d ON s.location = d.location_id;
+John|Smith|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
+
+
+
+Outer joins come in three flavors:
+a) left join (all rows from the left table and matched rows from the right table)
+we would expect all of the students (the left table) and any locations that are matched with students:
+
+sqlite> select s.first_name,s.last_name,d.city from students s LEFT  JOIN dbc_locations d ON s.location = d.location_id;
+John|Smith|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
+Simon|Jamison|
+
+
+b) right join (all rows from the right table and matched rows from the left table)
+we would expect all of the locations (the right table) and any students that are matched with locations (but it looks like sqlite3 does not support this type of join):
+
+sqlite> select s.first_name,s.last_name,d.city from students s RIGHT JOIN dbc_locations d ON s.location = d.location_id;
+Error: RIGHT and FULL OUTER JOINs are not currently supported
+
+
+c) full join (all rows from both tables, regardless of match  - where no match exists, the missing side will contain null values)
+we would expect all of the locations and all of the  students, regardless of match status (but it looks like sqlite3 does not support this type of join):
+
+sqlite> select s.first_name,s.last_name,d.city from students s FULL JOIN dbc_locations d ON s.location = d.location_id;
+Error: RIGHT and FULL OUTER JOINs are not currently supported
