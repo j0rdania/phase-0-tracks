@@ -1,0 +1,23 @@
+select * from dbc_locations;
+1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+2|458 Sunnyvale-Saratoga Blvd.|Sunnyvale|CA|94087|5500|Molly|55
+3|567 Main Street|Des Moines|IA|50312|400|Steve|10
+
+sqlite> update dbc_locations set campus_director='Phillip' where location_id=2;
+sqlite> select * from students s, dbc_locations d where d.location_id = s.location;
+1|John|Smith|true||0|1|1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+2|Mary|Jones|false||0|1|1|123 Elm Street|Seattle|WA|98011|2000|Jerod|28
+3|Janet|Jackson|true|A|3|2|2|458 Sunnyvale-Saratoga Blvd.|Sunnyvale|CA|94087|5500|Phillip|55
+4|Billy|Thompson|true|A-|4|3|3|567 Main Street|Des Moines|IA|50312|400|Steve|10
+
+sqlite> select s.first_name,s.last_name,d.city from students s, dbc_locations d where d.location_id = s.location;
+John|Smith|Seattle
+Mary|Jones|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
+
+sqlite> delete from students where fully_paid='false';
+sqlite> select s.first_name,s.last_name,d.city from students s, dbc_locations d where d.location_id = s.location;
+John|Smith|Seattle
+Janet|Jackson|Sunnyvale
+Billy|Thompson|Des Moines
