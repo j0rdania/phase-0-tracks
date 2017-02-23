@@ -1,0 +1,13 @@
+sqlite> select * from users,businesses,reviews where users.uid=reviews.user_id and businesses.uid=reviews.business_id;
+2|Jack|Jones|4|We Sell Yarn, Inc.|1|4|food pretty good|4|2
+2|Jack|Jones|3|Verjus|2|2|poor service|3|2
+1|Jane|Smith|2|Sizzler Steakhouse|3|5|practically perfect in every way|2|1
+
+
+sqlite> select users.first_name, users.last_name, businesses.business_name,reviews.stars,reviews.comment from users,businesses,reviews where users.uid=reviews.user_id and businesses.uid=reviews.business_id;
+Jack|Jones|We Sell Yarn, Inc.|4|food pretty good
+Jack|Jones|Verjus|2|poor service
+Jane|Smith|Sizzler Steakhouse|5|practically perfect in every way
+
+sqlite> select users.first_name, users.last_name, businesses.business_name,reviews.stars,reviews.comment from users,businesses,reviews where users.uid=reviews.user_id and businesses.uid=reviews.business_id and businesses.uid = 2;
+Jane|Smith|Sizzler Steakhouse|5|practically perfect in every way
