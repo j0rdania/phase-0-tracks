@@ -6,10 +6,10 @@ require 'sqlite3'
 require 'faker'
 
 # create ferry database
-ferry_db = SQLite3:: Database.new('ferry.db')
+ferry_db = SQLite3::Database.new("ferry.db")
 
 # create users table
-cmd_to_run = "CREATE TABLE users(
+cmd_to_run = "CREATE TABLE IF NOT EXISTS users(
   uid integer primary key,
   user_name varchar(255),
   password varchar(255),
@@ -17,26 +17,29 @@ cmd_to_run = "CREATE TABLE users(
   travel_time_house_to_terminal integer,
   travel_time_work_to_terminal integer,
   sprinting_okay boolean
-);"
+)"
+puts cmd_to_run
 ferry_db.execute(cmd_to_run)
 
 # create ferry_schedule table
-cmd_to_run = CREATE TABLE ferry_schedule (
+cmd_to_run = "CREATE TABLE IF NOT EXISTS ferry_schedule(
   uid integer primary key,
-  originating_city varchar(255), 
+  originating_city varchar(255),
   day_of_week varchar(255),
   departure_time_hour integer,
   departure_time_min integer
-  );"
+  )"
+puts cmd_to_run
 ferry_db.execute(cmd_to_run)
 
 # create satisfaction_log table
-cmd_to_run = "CREATE TABLE satisfaction_log (
+cmd_to_run = "CREATE TABLE IF NOT EXISTS satisfaction_log(
   uid integer primary key,
   user_id integer,
   satisfied boolean,
   comments varchar(2000),
-  foreign key (user_id) REFERENCES users (uid);
-);"
+  foreign key(user_id) REFERENCES users(uid)
+)"
+puts cmd_to_run
 ferry_db.execute(cmd_to_run)
 
