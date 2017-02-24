@@ -65,25 +65,28 @@ def current_time(db_to_use,hour_or_minute)
   end
 end
 
-def valid_user?(db_to_use,user_name)
-  # returns uid if valid user; 0 if not
-
-  cmd_to_run = "SELECT uid from users where user_name='#{user_name}'"
-  # matching_users is an array holding all matching users - each matching user is itself an array
+def get_user_info(db_to_use,user_name)
+  # returns hash with all fields in user table if valid user; nil if not
+  db_to_use.results_as_hash = true
+  cmd_to_run = "SELECT * from users where user_name='#{user_name}'"
+  # matching_user is an array holding all matching users - each matching user is itself an array
   # there should be either 0 or 1 matching users
-  matching_users = db_to_use.execute(cmd_to_run)
-  if matching_users.length == 0
+  matching_user = db_to_use.execute(cmd_to_run)
+  if matching_user.length == 0
     # no users match given user_name
-    return 0
+    return nil
   else
     # return uid for given user_name
-    return matching_users[0][0]
+    # return matching_users[0][0]  # this is used if we get results as array instead of hash
+    return matching_user
   end
 end
 
+
+
 puts "current hour function call: #{current_time(ferry_db,'hour')}" 
 puts "current min function call: #{current_time(ferry_db,'minute')}" 
-puts "valid user for Jorkin? #{valid_user?(ferry_db,'Jorkin')}"
+puts "get user info for Jorkin: #{get_user_info(ferry_db,'Jorkin')}"
 
 
 
