@@ -8,7 +8,7 @@
 
 # Users will be able to update the following profile information:
 
-  # user name
+  # user name (user name must be unique)
   # password (current password will need to be entered before the password may be updated)
   # first_name
   # email_address
@@ -33,9 +33,9 @@ ferry_db = SQLite3::Database.open("ferry.db")
 
 # method to determine current local time, either for  hour or minute
 # input:  database to use if we use method a to calculate time
-          'hour' or 'minute' to indicate if we should calculate hour or minute of current time
+#         'hour' or 'minute' to indicate if we should calculate hour or minute of current time
 # output: integer 0-23 if hour requested
-          integer 0-59 if minute requested
+#         integer 0-59 if minute requested
 # note: there are two ways we could get the time:
 #    a) using the database's execute method to execute the following statement: "select strftime('%H %M','now','localtime');" 
 #    b) using the ruby Time class
@@ -65,11 +65,25 @@ def current_time(db_to_use,hour_or_minute)
   end
 end
 
+def valid_user?(db_to_use,user_name)
+  # returns uid if valid user; 0 if not
 
+  cmd_to_run = "SELECT uid from users where user_name='#{user_name}'"
+  # matching_users is an array holding all matching users - each matching user is itself an array
+  # there should be either 0 or 1 matching users
+  matching_users = db_to_use.execute(cmd_to_run)
+  if matching_users.length == 0
+    # no users match given user_name
+    return 0
+  else
+    # return uid for given user_name
+    return matching_users[0][0]
+  end
+end
 
 puts "current hour function call: #{current_time(ferry_db,'hour')}" 
-
 puts "current min function call: #{current_time(ferry_db,'minute')}" 
+puts "valid user for Jorkin? #{valid_user?(ferry_db,'Jorkin')}"
 
 
 
