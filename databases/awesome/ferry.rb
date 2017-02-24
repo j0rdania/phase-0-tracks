@@ -1,4 +1,4 @@
-# This is an application to determine when a Bainbridge Islander should leave from home or work in order to 
+# This is a web application to determine when a Bainbridge Islander should leave from home or work in order to 
 # catch the next Bainbridge Island/Seattle ferry. 
 
 # An sqlite3 database is used to store user and ferry data.
@@ -21,3 +21,55 @@
 # (note: e-mail is not secure, so this feature should be modified in the future.)
 
 # 
+# sqlite3 will be the database that holds user and ferry data. It will also hold a satisfaction log to 
+# get user feedback about the site.
+require 'sqlite3'
+# faker is a gem that will assist in testing; it makes up fake test data
+require 'faker'
+
+# open ferry.db database
+# create ferry database
+ferry_db = SQLite3::Database.open("ferry.db")
+
+# method to determine current local time, either for  hour or minute
+# input:  database to use if we use method a to calculate time
+          'hour' or 'minute' to indicate if we should calculate hour or minute of current time
+# output: integer 0-23 if hour requested
+          integer 0-59 if minute requested
+# note: there are two ways we could get the time:
+#    a) using the database's execute method to execute the following statement: "select strftime('%H %M','now','localtime');" 
+#    b) using the ruby Time class
+# both are programmed below as an academic exercise
+def current_time(db_to_use,hour_or_minute)
+  # method a
+  # cmd_to_run = "select strftime('%H %M','now','localtime')" 
+  # current_time = db_to_use.execute(cmd_to_run)
+  # puts current_time
+  # puts "class of current time is: #{current_time.class}"
+  # puts "array of 0 is: #{current_time[0]}"
+  # puts "array of 1 is: #{current_time[1]}"
+  # puts "array of 0 of array of 0 is: #{current_time[0][0]}"
+  # cur_time_array= current_time[0][0].split(' ')
+  # puts "cur_time_array is #{cur_time_array}"
+  # current_hour = cur_time_array[0].to_i
+  # current_minute = cur_time_array[1].to_i
+
+  # method b
+  current_time = Time.now
+  current_hour = current_time.hour
+  current_minute = current_time.min
+  if hour_or_minute == 'hour'
+    current_hour
+  else
+    current_minute
+  end
+end
+
+
+
+puts "current hour function call: #{current_time(ferry_db,'hour')}" 
+
+puts "current min function call: #{current_time(ferry_db,'minute')}" 
+
+
+
