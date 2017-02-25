@@ -138,13 +138,14 @@ def earliest_catchable_ferry_for_this_user(db_to_use,this_user_info,departing_ci
   # output: hash with two values: earliest_hour, and earliest_minute
 
   min_travel_time_needed = minimum_travel_time_needed(db_to_use,this_user_info,departing_city)
-  puts "min travel time needed in hours and minutes: #{min_travel_time_needed}" 
 
   # get current hour, minute, and day of week
   now_values = current_time()
  
   # calculate earliest_arrival_time_at_terminal if user left right now
-  # earliest_possible_hour = add_two_times(now_values[:current_hour],now_values[:current_minute],
+  # current time plus travel time
+  earliest_possible_terminal_arrival = add_two_times(now_values[:current_hour],now_values[:current_minute],min_travel_time_needed[:hours_needed],min_travel_time_needed[:minutes_needed])
+  puts "earliest possible terminal arrival: #{earliest_possible_terminal_arrival}"
   # get all departure times leaving from specified city for specified day of week
   # order by departure time hour, then departure time minute, with earliest values first
   db_to_use.results_as_hash = true
