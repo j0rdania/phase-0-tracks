@@ -29,7 +29,7 @@ require 'faker'
 
 # open ferry.db database
 # create ferry database
-ferry_db = SQLite3::Database.open("ferry.db")
+ferry_db = SQLite3::Database.open("ferry2.db")
 
 # method to determine current local time and day of week
 # input:  database to use if we use method a to calculate time
@@ -91,12 +91,17 @@ end
 
 def add_two_times(hour1,min1,hour2,min2)
   # return hash with result_hour and result_min
+  # negative numbers may be passed in. for example, 7,40,0,50 (50 minutes before 7:40am) 
+  # would give a result of 6:50 (6 for hour, 50 for minutes)
   # later, we need to handle if adding the two times results in the next day
   new_hour = hour1 + hour2
   new_min = min1 + min2
   if new_min >= 60
     new_min = new_min - 60
     new_hour = new_hour + 1
+  elsif new_min < 0
+    new_min = new_min + 60
+    new_hour = new_hour - 1
   end
   return_time={
     hour: new_hour,
@@ -108,17 +113,21 @@ def minimum_travel_time_needed(db_to_use,this_user_info,departing_city)
 # calculate minimum travel time needed. 
 # If this user is not willing to sprint, add two minutes travel time as wiggle room.
 # INPUT: database to use, hash of user info for this user, city that user wants to depart from
-# OUTPUT: an integer indicating the minimum number of minutes needed for travel time to terminal
+# OUTPUT: hash of hours_needed and minutes needed for travel time to terminal
   case departing_city
     when 'Bainbridge Island'
       min_travel_time_needed = this_user_info['travel_time_house_to_terminal']
     when 'Seattle'
       min_travel_time_needed = this_user_info['travel_time_work_to_terminal']
   end
-  if this_user_info['sprinting_okay'] == false
+  if this_user_info['sprinting_okay'] == 'false'
     min_travel_time_needed += 2
   end
-  min_travel_time_needed
+  # convert min_travel_time_needed from minutes to hours and minutes
+  return_interval = {
+    hours_needed: (min_travel_time_needed / 60),
+    minutes_needed: (min_travel_time_needed % 60)
+  }
 end
 
 def earliest_catchable_ferry_for_this_user(db_to_use,this_user_info,departing_city)
@@ -129,15 +138,13 @@ def earliest_catchable_ferry_for_this_user(db_to_use,this_user_info,departing_ci
   # output: hash with two values: earliest_hour, and earliest_minute
 
   min_travel_time_needed = minimum_travel_time_needed(db_to_use,this_user_info,departing_city)
-  puts "min travel time needed: #{min_travel_time_needed}"
+  puts "min travel time needed in hours and minutes: #{min_travel_time_needed}" 
 
   # get current hour, minute, and day of week
   now_values = current_time()
-  puts "now values are: #{now_values}"
-  puts "class of now values is: #{now_values.class}"
-
-  # calculate earliest_arrival_time_at_terminal
-
+ 
+  # calculate earliest_arrival_time_at_terminal if user left right now
+  # earliest_possible_hour = add_two_times(now_values[:current_hour],now_values[:current_minute],
   # get all departure times leaving from specified city for specified day of week
   # order by departure time hour, then departure time minute, with earliest values first
   db_to_use.results_as_hash = true
@@ -153,6 +160,7 @@ def earliest_catchable_ferry_for_this_user(db_to_use,this_user_info,departing_ci
   # and th
 end 
 
+#############    DRIVER CODE  ####################
 # puts "Please enter user name"
 # user_name=gets.chomp
 user_name='Jorkin'
