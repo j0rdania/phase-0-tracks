@@ -58,8 +58,6 @@ def current_time()
 
   # method b
   current_time = Time.now
-  puts current_time
-  puts "current time wday is: #{current_time.wday}" 
   case current_time.wday
     when 0,6
       day_of_week_span = 'S-S'
@@ -106,29 +104,32 @@ def add_two_times(hour1,min1,hour2,min2)
   }
 end
 
-def get_earliest_catchable_ferry(db_to_use,user_name,departing_city)
-  # given a db to use, a user name, and departing city,
-  # look at the current time and add this user's travel time to get
-  # the earliest ferry that could be caught if he or she leaves
-  # right now. If this user is not willing to sprint, add two minutes
-  # to the earliest catchable ferry time as wiggle room.
-  # input: ferry_db to use, user name, and departing city
-  # output: hash with two values: earliest_hour, and earliest_minute
-
-  # get user information
-  this_user_info = get_user_info(db_to_use,user_name)
-
-  # calculate minimum travel time needed. include 2 minute buffer is user is not willing to sprint
+def minimum_travel_time_needed(db_to_use,this_user_info,departing_city)
+# calculate minimum travel time needed. 
+# If this user is not willing to sprint, add two minutes travel time as wiggle room.
+# INPUT: database to use, hash of user info for this user, city that user wants to depart from
+# OUTPUT: an integer indicating the minimum number of minutes needed for travel time to terminal
   case departing_city
     when 'Bainbridge Island'
       min_travel_time_needed = this_user_info['travel_time_house_to_terminal']
     when 'Seattle'
       min_travel_time_needed = this_user_info['travel_time_work_to_terminal']
   end
-  puts "min travel time before sprint change: #{min_travel_time_needed.to_s}"
   if this_user_info['sprinting_okay'] == false
     min_travel_time_needed += 2
   end
+  min_travel_time_needed
+end
+
+def earliest_catchable_ferry_for_this_user(db_to_use,this_user_info,departing_city)
+  # add this user's travel time to the current time to get
+  # the earliest ferry that could be caught if he or she leaves
+  # right now. 
+  # input: ferry_db to use, a hash of user info for this user, and departing city
+  # output: hash with two values: earliest_hour, and earliest_minute
+
+  min_travel_time_needed = minimum_travel_time_needed(db_to_use,this_user_info,departing_city)
+  puts "min travel time needed: #{min_travel_time_needed}"
 
   # get current hour, minute, and day of week
   now_values = current_time()
@@ -137,46 +138,40 @@ def get_earliest_catchable_ferry(db_to_use,user_name,departing_city)
 
   # calculate earliest_arrival_time_at_terminal
 
-
   # get all departure times leaving from specified city for specified day of week
   # order by departure time hour, then departure time minute, with earliest values first
   db_to_use.results_as_hash = true
   cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='#{now_values[:today_day_of_week]}' ORDER BY departure_time_hour, departure_time_min ASC"
   departure_times = db_to_use.execute(cmd_to_run)
-  puts "departure times: #{departure_times}" 
-  puts "type of departure times is: #{departure_times.class}"
-  puts "array of 0: #{departure_times[0]}"
+  # puts "departure times: #{departure_times}" 
+  # puts "type of departure times is: #{departure_times.class}"
+  # puts "array of 0: #{departure_times[0]}"
 
   # cycle through departures array. while the departure hour is less than the current hour, keep going
   # once the departure hour is >= the current hour, 
   # while the 
   # and th
-
 end 
 
 # puts "Please enter user name"
 # user_name=gets.chomp
-# user_name='Jorkin'
+user_name='Jorkin'
 # get user information for entered user
-# this_user_info = get_user_info(ferry_db,user_name)
-# if this_user_info == nil 
-#   puts 'Invalid user name'
-# else
-#   puts "user id is #{this_user_info['uid']}" 
-# end
+this_user_info = get_user_info(ferry_db,user_name)
+if this_user_info == nil 
+  puts 'Invalid user name'
+else
+  puts "user id is #{this_user_info['uid']}" 
+end
 
 # puts "Please enter departing city"
 # departing_city = gets.chomp
-# departing_city='Bainbridge Island'
+departing_city='Bainbridge Island'
 
 # now we've got user information and departing city
-# get_earliest_catchable_ferry(ferry_db,user_name,departing_city)
+earliest_catchable_ferry_for_this_user(ferry_db,this_user_info,departing_city)
 
-# test get current time
-p current_time()
 
-# test add two times
-puts "add 22 minutes to 7:55 #{add_two_times(7,55,0,22).to_s}" 
 
 
 
