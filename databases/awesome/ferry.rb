@@ -31,17 +31,19 @@ require 'faker'
 # create ferry database
 ferry_db = SQLite3::Database.open("ferry.db")
 
-# method to determine current local time, either for  hour or minute
+# method to determine current local time and day of week
 # input:  database to use if we use method a to calculate time
-#         'hour' or 'minute' to indicate if we should calculate hour or minute of current time
-# output: integer 0-23 if hour requested
-#         integer 0-59 if minute requested
+#         'hour' or 'minute' or 'day_of_week' to indicate what should be calculated
+# output: hash with three keys:
+#           current_hour: integer 0-23 
+#           current_minute: integer 0-59 
+#           today_day_of_week: 'M-F' or 'S-S'
 # note: there are two ways we could get the time:
 #    a) using the database's execute method to execute the following statement: "select strftime('%H %M','now','localtime');" 
 #    b) using the ruby Time class
 # both are programmed below as an academic exercise
-def current_time(db_to_use,hour_or_minute)
-  # method a
+def current_time()
+  # method a  - assumes db_to_use would be passed into this method
   # cmd_to_run = "select strftime('%H %M','now','localtime')" 
   # current_time = db_to_use.execute(cmd_to_run)
   # puts current_time
@@ -56,13 +58,19 @@ def current_time(db_to_use,hour_or_minute)
 
   # method b
   current_time = Time.now
-  current_hour = current_time.hour
-  current_minute = current_time.min
-  if hour_or_minute == 'hour'
-    current_hour
-  else
-    current_minute
-  end
+  puts current_time
+  puts "current time wday is: #{current_time.wday}" 
+  case current_time.wday
+    when 0,6
+      day_of_week_span = 'S-S'
+    when 1..5
+      day_of_week_span = 'M-F'
+    end
+  now_values = {
+    current_hour: current_time.hour,
+    current_minute: current_time.min,
+    today_day_of_week: day_of_week_span
+  }
 end
 
 def get_user_info(db_to_use,user_name)
@@ -72,21 +80,109 @@ def get_user_info(db_to_use,user_name)
   # matching_user is an array holding all matching users - each matching user is itself an array
   # there should be either 0 or 1 matching users
   matching_user = db_to_use.execute(cmd_to_run)
+  # reset results method to non-hash
+  db_to_use.results_as_hash = false
   if matching_user.length == 0
     # no users match given user_name
     return nil
   else
-    # return uid for given user_name
-    # return matching_users[0][0]  # this is used if we get results as array instead of hash
-    return matching_user
+    # return matching_users[0][0]  # this would be used to return uid if we get results as array instead of hash
+    return matching_user[0]
   end
 end
 
+def add_two_times(hour1,min1,hour2,min2)
+  # return hash with result_hour and result_min
+  # later, we need to handle if adding the two times results in the next day
+  new_hour = hour1 + hour2
+  new_min = min1 + min2
+  if new_min >= 60
+    new_min = new_min - 60
+    new_hour = new_hour + 1
+  end
+  return_time={
+    hour: new_hour,
+    minutes: new_min
+  }
+end
+
+def get_earliest_catchable_ferry(db_to_use,user_name,departing_city)
+  # given a db to use, a user name, and departing city,
+  # look at the current time and add this user's travel time to get
+  # the earliest ferry that could be caught if he or she leaves
+  # right now. If this user is not willing to sprint, add two minutes
+  # to the earliest catchable ferry time as wiggle room.
+  # input: ferry_db to use, user name, and departing city
+  # output: hash with two values: earliest_hour, and earliest_minute
+
+  # get user information
+  this_user_info = get_user_info(db_to_use,user_name)
+
+  # calculate minimum travel time needed. include 2 minute buffer is user is not willing to sprint
+  case departing_city
+    when 'Bainbridge Island'
+      min_travel_time_needed = this_user_info['travel_time_house_to_terminal']
+    when 'Seattle'
+      min_travel_time_needed = this_user_info['travel_time_work_to_terminal']
+  end
+  puts "min travel time before sprint change: #{min_travel_time_needed.to_s}"
+  if this_user_info['sprinting_okay'] == false
+    min_travel_time_needed += 2
+  end
+
+  # get current hour, minute, and day of week
+  now_values = current_time()
+  puts "now values are: #{now_values}"
+  puts "class of now values is: #{now_values.class}"
+
+  # calculate earliest_arrival_time_at_terminal
 
 
-puts "current hour function call: #{current_time(ferry_db,'hour')}" 
-puts "current min function call: #{current_time(ferry_db,'minute')}" 
-puts "get user info for Jorkin: #{get_user_info(ferry_db,'Jorkin')}"
+  # get all departure times leaving from specified city for specified day of week
+  # order by departure time hour, then departure time minute, with earliest values first
+  db_to_use.results_as_hash = true
+  cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='#{now_values[:today_day_of_week]}' ORDER BY departure_time_hour, departure_time_min ASC"
+  departure_times = db_to_use.execute(cmd_to_run)
+  puts "departure times: #{departure_times}" 
+  puts "type of departure times is: #{departure_times.class}"
+  puts "array of 0: #{departure_times[0]}"
+
+  # cycle through departures array. while the departure hour is less than the current hour, keep going
+  # once the departure hour is >= the current hour, 
+  # while the 
+  # and th
+
+end 
+
+# puts "Please enter user name"
+# user_name=gets.chomp
+# user_name='Jorkin'
+# get user information for entered user
+# this_user_info = get_user_info(ferry_db,user_name)
+# if this_user_info == nil 
+#   puts 'Invalid user name'
+# else
+#   puts "user id is #{this_user_info['uid']}" 
+# end
+
+# puts "Please enter departing city"
+# departing_city = gets.chomp
+# departing_city='Bainbridge Island'
+
+# now we've got user information and departing city
+# get_earliest_catchable_ferry(ferry_db,user_name,departing_city)
+
+# test get current time
+p current_time()
+
+# test add two times
+puts "add 22 minutes to 7:55 #{add_two_times(7,55,0,22).to_s}" 
+
+
+
+
+
+
 
 
 
