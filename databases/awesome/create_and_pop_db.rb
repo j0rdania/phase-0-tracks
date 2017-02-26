@@ -8,7 +8,7 @@ require 'faker'
 require_relative 'ferry_schedule.rb'
 
 # create ferry database
-ferry_db = SQLite3::Database.new("ferry3.db")
+ferry_db = SQLite3::Database.new("ferry.db")
 
 # create users table
 cmd_to_run = "CREATE TABLE IF NOT EXISTS users(

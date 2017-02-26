@@ -39,7 +39,7 @@ require 'faker'
 
 # open ferry.db database
 # create ferry database
-ferry_db = SQLite3::Database.open("ferry3.db")
+ferry_db = SQLite3::Database.open("ferry.db")
 
 def current_time()
   # method to determine current local time and day of week
@@ -244,6 +244,19 @@ def target_ferry_for_this_user(
   }
  end 
 
+ def format_pretty_time_string(
+  in_hour,
+  in_minutes)
+  # determine AM And PM, convert from 24 hour clock to 12 hour clock, return nicely formatted time string
+  if in_hour > 12
+    in_hour=in_hour - 12
+    am_pm = 'PM'
+  else
+    am_pm='AM'
+  end
+  return in_hour.to_s + ':' + in_minutes.to_s + ' ' + am_pm
+end
+
 #############    DRIVER CODE  ####################
 # puts "Please enter user name"
 # user_name=gets.chomp
@@ -258,8 +271,13 @@ end
 # departing_city = gets.chomp
 departing_city='Bainbridge Island'
 
-# now we've got user information and departing city
-puts target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
+# now we've got user information and departing city; determine target ferry
+target_ferry = target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
+# calculate leave time to catch target ferry
+
+# for testing, just set leave time to ferry time for now
+leave_time = target_ferry 
+puts "Leave at #{format_pretty_time_string(leave_time[:departure_hour],leave_time[:departure_minute])} to catch the #{format_pretty_time_string(target_ferry[:departure_hour],target_ferry[:departure_minute])} ferry. Happy sailing!"
 
 
 
