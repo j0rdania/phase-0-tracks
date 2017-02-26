@@ -78,9 +78,9 @@ def current_time()
       day_of_week_span = 'M-F'
     end
   now_values = {
-    current_hour: current_time.hour,
-    current_minute: current_time.min,
-    today_day_of_week: day_of_week_span
+    hour: current_time.hour,
+    minutes: current_time.min,
+    day_of_week_interval: day_of_week_span
   }
 end
 
@@ -110,7 +110,7 @@ def add_two_times(
   hour2,
   min2)
   # return hash with result_hour and result_min
-  # negative numbers may be passed in. for example, 7,40,0,50 (50 minutes before 7:40am) 
+  # negative numbers may be passed in. for example, 7,40,0,-50 (50 minutes before 7:40am) 
   # would give a result of 6:50 (6 for hour, 50 for minutes)
   # later, we need to handle if adding the two times results in the next day
   new_hour = hour1 + hour2
@@ -135,7 +135,7 @@ def minimum_travel_time_needed(
 # calculate minimum travel time needed. 
 # If this user is not willing to sprint, add two minutes travel time as wiggle room.
 # INPUT: database to use, hash of user info for this user, city that user wants to depart from
-# OUTPUT: hash of hours_needed and minutes needed for travel time to terminal
+# OUTPUT: hash of hours and minutes needed for travel time to terminal
   case departing_city
     when 'Bainbridge Island'
       min_travel_time_needed = this_user_info['travel_time_house_to_terminal']
@@ -147,8 +147,8 @@ def minimum_travel_time_needed(
   end
   # convert min_travel_time_needed from minutes to hours and minutes
   return_interval = {
-    hours_needed: (min_travel_time_needed / 60),
-    minutes_needed: (min_travel_time_needed % 60)
+    hour: (min_travel_time_needed / 60),
+    minutes: (min_travel_time_needed % 60)
   }
 end
 
@@ -180,9 +180,10 @@ def target_ferry_for_this_user(
   # the earliest ferry that could be caught if he or she leaves
   # right now. 
   # input: ferry_db to use, a hash of user info for this user, and departing city
-  # output: hash with two values: departure_hour and departure_minute
+  # output: hash with three values: departure_hour, departure_minute, travel_time
 
-  # look up how many minutes this user needs to get to the departing ferry terminal
+  # calculate min travel time this user needs to get to the departing ferry terminal
+  # results are a hash with hour and minutes keys
   min_travel_time_needed = minimum_travel_time_needed(db_to_use,this_user_info,departing_city)
 
   # get current hour, minute, and day of week
@@ -190,15 +191,18 @@ def target_ferry_for_this_user(
  
   # calculate earliest_arrival_time_at_terminal (EAT) if user left right now
   # current time plus travel time
-
-  earliest_possible_terminal_arrival = add_two_times(now_values[:current_hour],now_values[:current_minute],min_travel_time_needed[:hours_needed],min_travel_time_needed[:minutes_needed])
+  earliest_possible_terminal_arrival = add_two_times(
+      now_values[:hour],
+      now_values[:minutes],
+      min_travel_time_needed[:hour],
+      min_travel_time_needed[:minutes])
 
   # get all departure times leaving from specified city for specified day of week
   # order by departure time hour, then departure time minute, with earliest values first
   # departure_times is an array of hashes; each hash is an entry in the ferry schedule with the following keys:
   # departure_time_hour and departure_time_min
   db_to_use.results_as_hash = true
-  cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='#{now_values[:today_day_of_week]}' ORDER BY departure_time_hour, departure_time_min ASC"
+  cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='#{now_values[:day_of_week_interval]}' ORDER BY departure_time_hour, departure_time_min ASC"
   departure_times = db_to_use.execute(cmd_to_run)
 
   # cycle through departures array for this departing city, which is sorted by departure hour, then departure minutes 
@@ -239,8 +243,9 @@ def target_ferry_for_this_user(
 
   # return this departure time entry
   target_ferry = {
-    departure_hour: departure_times[i]['departure_time_hour'],
-    departure_minute: departure_times[i]['departure_time_min']
+    hour: departure_times[i]['departure_time_hour'],
+    minutes: departure_times[i]['departure_time_min'],
+    travel_time: min_travel_time_needed      # a hash with two keys: hour and minutes
   }
  end 
 
@@ -258,6 +263,23 @@ def target_ferry_for_this_user(
 end
 
 #############    DRIVER CODE  ####################
+
+# ask user what he or she would like to do
+continue = true
+puts 'Welcome to the awesome "What Time Should I Leave for the Ferry?" utility! Type "log in" to log in, "create" to create a new account, or "quit" to quit.'
+action_requested = gets.chomp
+case action_requested
+  when 'quit','q'
+    # quit
+    puts 'about to quit'
+  when 'create','c'
+   # create new account
+   puts 'about to create new account'
+  when 'log in','l'
+    # log in to existing account
+    puts 'about to log in'
+end
+# 
 # puts "Please enter user name"
 # user_name=gets.chomp
 user_name='Jorkin'
@@ -271,13 +293,14 @@ end
 # departing_city = gets.chomp
 departing_city='Bainbridge Island'
 
-# now we've got user information and departing city; determine target ferry
+# determine target ferry
 target_ferry = target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
-# calculate leave time to catch target ferry
 
-# for testing, just set leave time to ferry time for now
-leave_time = target_ferry 
-puts "Leave at #{format_pretty_time_string(leave_time[:departure_hour],leave_time[:departure_minute])} to catch the #{format_pretty_time_string(target_ferry[:departure_hour],target_ferry[:departure_minute])} ferry. Happy sailing!"
+# calculate leave time to catch target ferry
+leave_time = add_two_times(target_ferry[:hour],target_ferry[:minutes],(target_ferry[:travel_time][:hour]),(target_ferry[:travel_time][:minutes]))
+
+# display results to user
+puts "Leave at #{format_pretty_time_string(leave_time[:hour],leave_time[:minutes])} to catch the #{format_pretty_time_string(target_ferry[:hour],target_ferry[:minutes])} ferry. Happy sailing!"
 
 
 
