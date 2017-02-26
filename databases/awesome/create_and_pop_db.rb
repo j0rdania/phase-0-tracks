@@ -8,7 +8,7 @@ require 'faker'
 require_relative 'ferry_schedule.rb'
 
 # create ferry database
-ferry_db = SQLite3::Database.new("ferry.db")
+ferry_db = SQLite3::Database.new("ferry3.db")
 
 # create users table
 cmd_to_run = "CREATE TABLE IF NOT EXISTS users(
@@ -43,7 +43,7 @@ cmd_to_run = "CREATE TABLE IF NOT EXISTS satisfaction_log(
 ferry_db.execute(cmd_to_run)
 
 # populate users table with one user
-cmd_to_run = "insert into users values (null,'Jorkin','xyz','Jordan',22,13,'true')"
+cmd_to_run = "insert into users values (null,'Jorkin','xyz','Jordan',62,13,'false')"
 ferry_db.execute(cmd_to_run)
 
 # populate ferry schedule table, using ferry_schedule.rb as the input
