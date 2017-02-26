@@ -265,21 +265,38 @@ end
 #############    DRIVER CODE  ####################
 
 # ask user what he or she would like to do
-continue = true
-puts 'Welcome to the awesome "What Time Should I Leave for the Ferry?" utility! Type "log in" to log in, "create" to create a new account, or "quit" to quit.'
+
+puts 'Welcome to the awesome "What Time Should I Leave for the Ferry?" utility! Type "l" to log in, "c" to create a new account, or "q" to quit.'
 action_requested = gets.chomp
-case action_requested
-  when 'quit','q'
+case action_requested.first.downcase
+  when 'q'
     # quit
-    puts 'about to quit'
-  when 'create','c'
-   # create new account
-   puts 'about to create new account'
-  when 'log in','l'
+  when 'c'
+    # create new account
+    puts 'about to create new account'
+  when 'l'
     # log in to existing account
     puts 'about to log in'
+    # user is now logged in - ask what he or she would like to do
+    # options are:
+    # "bi" = leave from Bainbridge
+    # "sea" = leave from Seattle
+    # "profile" = edit profile
+    puts 'Welcome! Type "b" to leave from Bainbrige Island, "s" to leave from Seattle, and "p" to edit your profile.'
+    action_requested = gets.chomp
+    case action_requested.chars.first.downcase
+      when 'b'
+        # leave from Bainbridge
+      when 's'
+          #leave from Seattle
+      when 'p'
+        # edit profile
+    end
 end
+
 # 
+
+
 # puts "Please enter user name"
 # user_name=gets.chomp
 user_name='Jorkin'
