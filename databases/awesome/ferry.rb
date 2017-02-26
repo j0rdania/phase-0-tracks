@@ -37,10 +37,6 @@ require 'faker'
 
 ##################  end require  #################################
 
-# open ferry.db database
-# create ferry database
-ferry_db = SQLite3::Database.open("ferry.db")
-
 def current_time()
   # method to determine current local time and day of week
 # input:  database to use if we use method a to calculate time
@@ -262,62 +258,143 @@ def target_ferry_for_this_user(
   return in_hour.to_s + ':' + in_minutes.to_s + ' ' + am_pm
 end
 
-#############    DRIVER CODE  ####################
+def log_in(db_to_use)
+  # get log in information from user and validate
+  # INPUT: none
+  # OUTPUT: user info hash if logged in successfully, nil otherwise
 
+  # get user name
+  valid_user_name_entered = false
+  while  !valid_user_name_entered
+    puts 'Enter your user name, type "forgot user name", or type "quit"'
+    user_name = gets.chomp
+    case user_name.downcase
+      when 'forgot user name'
+        # handle if user forgot user name
+        # if email successfully matched and email sent, set reminder_email_sent to true
+        puts "insert code here to send reminder email"
+        return nil
+      when 'quit'
+        return nil 
+      else
+        # user name was entered; check validity of user name and get user information for entered user
+        this_user_info = get_user_info(db_to_use,user_name)
+        if this_user_info == nil 
+          puts 'Invalid user name. Please try again.'
+        else
+          valid_user_name_entered = true
+        end
+    end
+  end
+
+  # get password
+  valid_password_entered = false 
+  reminder_email_sent = false 
+  if valid_user_name_entered
+    while !valid_password_entered
+      puts 'Enter your password, type "forgot password", or type "quit"'
+      password = gets.chomp
+      if password.downcase == 'forgot password'
+          # handle if user forgot password
+          # if email successfully matched and email sent, set reminder_email_sent to true
+          puts "insert code here to send reminder email"
+          return nil
+      elsif password.downcase == 'quit'
+          return nil
+      else
+        # password was entered; check validity of password 
+        if this_user_info[:password] == password
+          valid_password_entered = true
+        else
+          puts 'Invalid password. Please try again.'
+        end
+      end
+    end
+  end
+  # valid user name and password entered; return user info
+  return this_user_info
+end
+
+####################################################    DRIVER CODE  ###################################################################### 
+
+
+############  connect to database   ##################
+# open ferry.db database
+# create ferry database
+ferry_db = SQLite3::Database.open("ferry.db")
+
+############   end connect to database   ##############
+
+
+puts 'Welcome to the awesome "What Time Should I Leave for the Ferry?" utility. Press any key for awesomeness!'
 # ask user what he or she would like to do
-
-puts 'Welcome to the awesome "What Time Should I Leave for the Ferry?" utility! Type "l" to log in, "c" to create a new account, or "q" to quit.'
-action_requested = gets.chomp
-case action_requested.first.downcase
+valid_action_requested = false
+while !valid_action_requested 
+  puts 'Type "l" to log in, "c" to create a new account, or "q" to quit.'
+  action_requested = gets.chomp
+  if !['l','c','q'].include? action_requested.chars.first.downcase
+    # user did not enter a valid choice
+    puts "Not one of your awesome choices. Please try again."
+  else
+    valid_action_requested = true
+  end
+end
+case action_requested.chars.first.downcase
   when 'q'
     # quit
   when 'c'
     # create new account
-    puts 'about to create new account'
+    puts 'about to create new account - insert code here'
+
   when 'l'
     # log in to existing account
-    puts 'about to log in'
-    # user is now logged in - ask what he or she would like to do
-    # options are:
-    # "bi" = leave from Bainbridge
-    # "sea" = leave from Seattle
-    # "profile" = edit profile
-    puts 'Welcome! Type "b" to leave from Bainbrige Island, "s" to leave from Seattle, and "p" to edit your profile.'
-    action_requested = gets.chomp
-    case action_requested.chars.first.downcase
-      when 'b'
-        # leave from Bainbridge
-      when 's'
-          #leave from Seattle
-      when 'p'
-        # edit profile
+    this_user_info = log_in(ferry_db)
+    if this_user_info == nil 
+      # log in failed
+    else
+      # log in successful
+      # user is now logged in - ask what he or she would like to do
+      # options are:
+      # "bi" = leave from Bainbridge
+      # "sea" = leave from Seattle
+      # "profile" = edit profile
+      user_requested_quit = false
+      while !user_requested_quit
+        valid_logged_in_action_requested = false
+        while !valid_logged_in_action_requested
+          puts 'Welcome! Type "b" to leave from Bainbrige Island, "s" to leave from Seattle, "p" to edit your profile, or "q" to quit.'
+          action_requested = gets.chomp
+          if !['b','s','p'].include? action_requested.chars.first.downcase 
+            # user did not enter a valid choice
+            puts "Not one of your awesome choices. Please try again."
+          else
+            valid_logged_in_action_requested = true
+          end
+        end
+        case action_requested.chars.first.downcase
+          when 'b','s'
+            case action_requested.chars.first.downcase 
+              when 'b'
+                departing_city = 'Bainbridge Island'
+              when 's'
+                departing_city='Seattle'
+            end
+            # determine target ferry
+            target_ferry = target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
+            # calculate leave time to catch target ferry
+            leave_time = add_two_times(target_ferry[:hour],target_ferry[:minutes],(target_ferry[:travel_time][:hour]),(target_ferry[:travel_time][:minutes]))
+            # display results to user
+            puts "Leave at #{format_pretty_time_string(leave_time[:hour],leave_time[:minutes])} to catch the #{format_pretty_time_string(target_ferry[:hour],target_ferry[:minutes])} ferry. Happy sailing!"
+          when 'p'
+            # edit profile
+            puts "insert code here to edit profile"
+          when 'q'
+            # quit
+            user_requested_quit = true
+        end
+      end
     end
 end
-
-# 
-
-
-# puts "Please enter user name"
-# user_name=gets.chomp
-user_name='Jorkin'
-# get user information for entered user
-this_user_info = get_user_info(ferry_db,user_name)
-if this_user_info == nil 
-  puts 'Invalid user name'
-end
-
-# puts "Please enter departing city"
-# departing_city = gets.chomp
-departing_city='Bainbridge Island'
-
-# determine target ferry
-target_ferry = target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
-
-# calculate leave time to catch target ferry
-leave_time = add_two_times(target_ferry[:hour],target_ferry[:minutes],(target_ferry[:travel_time][:hour]),(target_ferry[:travel_time][:minutes]))
-
-# display results to user
-puts "Leave at #{format_pretty_time_string(leave_time[:hour],leave_time[:minutes])} to catch the #{format_pretty_time_string(target_ferry[:hour],target_ferry[:minutes])} ferry. Happy sailing!"
 
 
 
