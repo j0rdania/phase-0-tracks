@@ -16,10 +16,9 @@
   # travel time from work to Colman Dock
   # sprinting okay? ('true' is user doesn't mind sprinting to catch the ferry, 'false' otherwise)
 
-# The log on screen will have a "forgot password?" option. If chosen, an e-mail 
-# containing the user's user name and password will be sent to the e-mail address on file
-# (note: e-mail is not secure, so this feature should be modified in the future.)
 
+# later - add mechanism to allow user to securely reset password if forgotten
+# later - add mechanism to handle if user name is forgotten 
 # later - handle other routes besides Bainbridge Island - Seattle
 # later - need to handle last entry on official ferry scheudle (i.e. 12:55am ferry the next day)
 # later - convert to live feed from WSDOT - will include seasonal schedule changes and delayed/cancelled ferry info
@@ -27,6 +26,8 @@
 # later - handle midnight boat case (0,0)
 # later - handle 7:55 ferry on Sunday mornings
 # later - add commits and rollbacks
+# later - add validation on user name - may not contain quotes
+# later - add GPS feature that will calculate driving or walking time to ferry terminal based on current location and current traffic conditions
 
 ##################   require    ###################################
 # sqlite3 will be the database that holds user and ferry data. It will also hold a satisfaction log to 
@@ -45,7 +46,7 @@ def current_time()
 # output: hash with three keys:
 #           current_hour: integer 0-23 
 #           current_minute: integer 0-59 
-#           today_day_of_week: 'M-F' or 'S-S'
+#           day_of_week: 0 for Sunday, 1 for Monday, etc.
 
 # note: there are two ways we could get the time:
 #    a) using the database's execute method to execute the following statement: "select strftime('%H %M','now','localtime');" 
@@ -68,25 +69,25 @@ def current_time()
 
   # method b
   current_time = Time.now
-  case current_time.wday
-    when 0,6
-      day_of_week_span = 'S-S'
-    when 1..5
-      day_of_week_span = 'M-F'
-    end
   now_values = {
     hour: current_time.hour,
     minutes: current_time.min,
-    day_of_week_interval: day_of_week_span
+    day_of_week: current_time.wday
   }
 end
 
 def get_user_info(
   db_to_use,
-  user_name)
+  user_name,
+  uid)
   # returns hash with all fields in user table if valid user; nil if not
+  # use uid if specified; use user_name if no uid specified
   db_to_use.results_as_hash = true
-  cmd_to_run = "SELECT * from users where user_name='#{user_name}'"
+  if uid == nil
+    cmd_to_run = "SELECT * from users where user_name='#{user_name}'"
+  else
+    cmd_to_run = "SELECT * from users where uid=#{uid}"
+  end
   # matching_user is an array holding all matching users - each matching user is itself an array
   # there should be either 0 or 1 matching users
   matching_user = db_to_use.execute(cmd_to_run)
@@ -157,8 +158,9 @@ def this_is_the_target_ferry?(
   earliest_min,
   originating_city)
   # this method determines if the given ferry is the correct target ferry
-  # if the departure hour >= EAT (earliest arrival time) hour or (the departure hour = EAT hour and the departure min >= EAT minutes), then
+  # if the departure hour > EAT (earliest arrival time) hour or (the departure hour = EAT hour and the departure min >= EAT minutes), then
   # the user can catch this ferry if he or she leaves now
+  # OUTPUT: true or false, indicating if this is the target ferry for this user
 
   if (departure_hour > earliest_hour) ||
     ((departure_hour == earliest_hour) &&
@@ -199,7 +201,13 @@ def target_ferry_for_this_user(
   # departure_times is an array of hashes; each hash is an entry in the ferry schedule with the following keys:
   # departure_time_hour and departure_time_min
   db_to_use.results_as_hash = true
-  cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='#{now_values[:day_of_week_interval]}' ORDER BY departure_time_hour, departure_time_min ASC"
+  case now_values[:day_of_week]
+    when 0,6
+      day_of_week_span = 'S-S'
+    when 1..5
+      day_of_week_span = 'M-F'
+  end
+  cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='#{day_of_week_span}' ORDER BY departure_time_hour, departure_time_min ASC"
   departure_times = db_to_use.execute(cmd_to_run)
 
   # cycle through departures array for this departing city, which is sorted by departure hour, then departure minutes 
@@ -220,12 +228,10 @@ def target_ferry_for_this_user(
     end
   end
   if last_boat_reached 
-
-  puts "last boat just reached in target_ferry_for_this_user; i is #{i}, departure_times at i is: #{departure_times[i]}"
     # if we got all the way to the end of the array, and there were no ferries found, then we should choose
     # the first element of the array - it will be the morning ferry the next day. Note: if today is a Friday, then we will need
     # to get the weekend schedule first. Likewise, if today is a Sunday, we will need to get the weekday schedule first.
-    case now_values[today_day_of_week]
+    case now_values[:day_of_week_interval]
       when 0
         # today is Sunday - get weekday departure schedule
         cmd_to_run = "select departure_time_hour,departure_time_min from ferry_schedule where originating_city='#{departing_city}' and day_of_week='M-F' ORDER BY departure_time_hour, departure_time_min ASC"
@@ -279,14 +285,13 @@ def log_in(db_to_use)
     case user_name.downcase
       when 'forgot user name'
         # handle if user forgot user name
-        # if email successfully matched and email sent, set reminder_email_sent to true
-        puts "insert code here to send reminder email"
+        puts "Sorry, out of luck for now. However, this utility will be even more awesome in the future."
         return nil
       when 'quit'
         return nil 
       else
         # user name was entered; check validity of user name and get user information for entered user
-        this_user_info = get_user_info(db_to_use,user_name)
+        this_user_info = get_user_info(db_to_use,user_name,nil)
         if this_user_info == nil 
           puts 'Invalid user name. Please try again.'
         else
@@ -296,15 +301,13 @@ def log_in(db_to_use)
   end
   # get password
   valid_password_entered = false 
-  reminder_email_sent = false 
   if valid_user_name_entered
     while !valid_password_entered
       puts 'Enter your password, type "forgot password", or type "quit"'
       password = gets.chomp
       if password.downcase == 'forgot password'
         # handle if user forgot password
-        # if email successfully matched and email sent, set reminder_email_sent to true
-        puts "insert code here to send reminder email"
+        puts "Sorry, out of luck for now. However, this utility will be even more awesome in the future."
         return nil
       elsif password.downcase == 'quit'
         return nil
@@ -322,6 +325,111 @@ def log_in(db_to_use)
   return this_user_info
 end
 
+
+def update_table(db_to_use,table_to_update,field_to_update,new_value,primary_key_int_value)
+  cmd_to_run="UPDATE #{table_to_update} SET #{field_to_update} = #{new_value} WHERE uid=#{primary_key_int_value}"
+  puts "cmd to run is: #{cmd_to_run}"
+  db_to_use.execute(cmd_to_run) 
+  puts
+  puts '************'
+  if db_to_use.changes() == 0
+    # no changes made
+    puts "Not so awesome: field not updated."
+  else
+    puts "All is awesome: new value has been recorded."
+  end
+  puts '************'
+  puts
+end
+
+def edit_profile(db_to_use,this_user_info)
+  done_editing = false
+  while !done_editing
+    valid_profile_action_entered = false
+    while !valid_profile_action_entered
+      puts
+      puts 'Type "home" to update travel time from home to Bainbridge ferry terinal'
+      puts 'Type "work" to update travel time from work to Colman Dock'
+      puts 'Type "sprint" to update sprinting_okay flag'
+      puts 'Type "name" to update first name'
+      puts 'Type "user name" to update user name'
+      puts 'Type "password" to update password'
+      puts 'Type "done" if you are done editing your profile'
+      action_requested = gets.chomp.chars.first.downcase
+      if !['h','w','s','n','u','p','d'].include? action_requested
+        # user did not enter a valid choice
+        puts "Not one of your awesome choices. Please try again."
+      else
+        valid_profile_action_entered = true
+      end
+    end
+    case action_requested
+      when 'h'
+        # update time to travel from home to Bainbridge terminal
+        puts "Please enter new value for time to travel from home to Bainbridge terminal:"
+        new_value = gets.chomp
+        update_table(db_to_use,'users','travel_time_house_to_terminal',new_value,this_user_info['uid'])
+      when 'w'
+        # update time to travel from work to Colman Dock
+        puts "Please enter new value for time to travel from work to Colman Dock:"
+        new_value = gets.chomp
+        update_table(db_to_use,'users','travel_time_work_to_terminal',new_value,this_user_info['uid'])
+      when 's'
+        # update sprinting_okay flag
+        valid_sprint_entered = false
+        while !valid_sprint_entered
+          puts 'Are you willing to sprint? Type "yes" or "no"'
+          new_value = gets.chomp.chars.first
+          if !['y','n'].include? new_value
+            # user did not enter a valid choice
+            puts "Not one of your awesome choices. Please try again."
+          else
+            valid_sprint_entered = true
+            if new_value == 'y'
+              new_value = true
+            else
+              new_value = false
+            end
+            update_table(db_to_use,'users','sprinting_okay',new_value,this_user_info['uid'])
+          end
+        end
+      when 'n'
+        # update first name
+        puts "Please enter new first name:"
+        new_value = gets.chomp
+        update_table(db_to_use,'users','first_name',new_value,this_user_info['uid'])
+      when 'u'
+        # update user name
+        puts "Please enter new user name"
+        new_value = gets.chomp
+        update_table(db_to_use,'users','user_name',new_value,this_user_info['uid'])
+      when 'p'
+        # change password
+        puts "Please enter new password"
+        new_value = gets.chomp
+        update_table(db_to_use,'users','password',new_value,this_user_info['uid'])
+      when 'd'
+        # all done with profile changes
+        done_editing = true
+    end
+  end
+end
+
+def display_current_profile(this_user_info)
+  puts
+  puts '************'
+  puts "Current Profile Information:"
+  this_user_info.each do |field,value|
+    if field == 'password'
+      # don't display password
+      puts "password: XXXXXXXXXXX"
+    else
+      puts "#{field}: #{value}"
+    end
+  end
+  puts '************'
+  puts
+end
 
 ####################################################    DRIVER CODE  ###################################################################### 
 
@@ -353,7 +461,6 @@ case action_requested.chars.first.downcase
   when 'c'
     # create new account
     puts 'about to create new account - insert code here'
-
   when 'l'
     # log in to existing account
     this_user_info = log_in(ferry_db)
@@ -372,10 +479,10 @@ case action_requested.chars.first.downcase
         valid_logged_in_action_requested = false
         while !valid_logged_in_action_requested
           puts
-          puts 'Type "b" to leave from Bainbrige Island'
-          puts 'Type "s" to leave from Seattle'
-          puts 'Type "p" to edit your profile'
-          puts 'Type "q" to quit'
+          puts 'Type "bainbridge" to leave from Bainbrige Island'
+          puts 'Type "seattle" to leave from Seattle'
+          puts 'Type "profile" to edit your profile'
+          puts 'Type "quit" to quit'
           action_requested = gets.chomp
           if !['b','s','p','q'].include? action_requested.chars.first.downcase 
             # user did not enter a valid choice
@@ -386,18 +493,21 @@ case action_requested.chars.first.downcase
         end
         case action_requested.chars.first.downcase
           when 'b','s'
+            # is departing city bainbridge or seattle?
             case action_requested.chars.first.downcase 
               when 'b'
                 departing_city = 'Bainbridge Island'
               when 's'
                 departing_city='Seattle'
             end
+
             # determine target ferry
             target_ferry = target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
             
             # calculate leave time to catch target ferry, pass travel time as negative hours and negative minutes, 
             # because we want to subtract that time from the ferry departure time to get time to leave
             leave_time = add_two_times(target_ferry[:hour],target_ferry[:minutes],(-1 * (target_ferry[:travel_time][:hour])),( -1  * (target_ferry[:travel_time][:minutes])))
+            
             # display results to user
             puts
             puts '************'
@@ -406,57 +516,15 @@ case action_requested.chars.first.downcase
             puts
           when 'p'
             # edit profile
-            done_editing = false
-            while !done_editing
-              valid_profile_action_entered = false
-              while !valid_profile_action_entered
-                puts 'Type "home" to update travel time from home to Bainbridge ferry terinal'
-                puts 'Type "work" to update travel time from work to Colman Dock'
-                puts 'Type "sprint" to update sprinting_okay flag'
-                puts 'Type "name" to update first name'
-                puts 'Type "user name" to update user name'
-                puts 'Type "password" to update password'
-                puts 'Type "quit" if you are done editing your profile'
-                action_requested = gets.chomp.chars.first.downcase
-                if !['h','w','s','n','u','p','q'].include? action_requested
-                  # user did not enter a valid choice
-                  puts "Not one of your awesome choices. Please try again."
-                else
-                  valid_profile_action_entered = true
-                end
-              end
-              choose case action_requested
-                when 'h'
-                  # update time to travel from home to Bainbridge terminal
-                  puts "Please enter new value for time to travel from home to Bainbridge terminal:"
-                  new_value = gets.chomp
-                  cmd_to_run="UPDATE users SET travel_time_house_to_terminal = #{new_value} WHERE uid = #{user_info['uid']}"
-                  ferry_db.execute(cmd_to_run) 
-                  if ferry_db.changes()  == 0
-                    # no changes made
-                    puts "Not so awesome: field not updated."
-                  end
-                when 'w'
-                  # update time to travel from work to Colman Dock
-                when 's'
-                  # update sprinting_okay flag
-                when 'n'
-                  # update first name
-                when 'u'
-                  # update user name
-                when 'p'
-                  # change password
-                when 'q'
-                  # all done with profile changes
-                  done_editing = true
-              end
-
-          end
-        when 'q'
-          # user would like to quit
-          user_requested_quit = true
+            # display current data (do not display password)
+            display_current_profile(this_user_info)
+            edit_profile(ferry_db,this_user_info)
+            # we need to update the this_user_info hash with current information
+            this_user_info = get_user_info(ferry_db,'',this_user_info['uid'])
+          when 'q'
+            user_requested_quit = true
+        end
       end
-    end
   end
 end
 
