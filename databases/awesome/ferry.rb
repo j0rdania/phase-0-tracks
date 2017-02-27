@@ -327,22 +327,54 @@ end
 
 
 def update_table(db_to_use,table_to_update,field_to_update,new_value,primary_key_int_value)
-  cmd_to_run="UPDATE #{table_to_update} SET #{field_to_update} = #{new_value} WHERE uid=#{primary_key_int_value}"
-  puts "cmd to run is: #{cmd_to_run}"
+  # issue update SQL statement and display feedback to user
+  # note: for string fields, be sure to pass in the new_value with single quotes embedded 
+  # OUTPUT: return true if successful, false if not
+
+  cmd_to_run="UPDATE #{table_to_update} SET #{field_to_update}=#{new_value} WHERE uid=#{primary_key_int_value}"
   db_to_use.execute(cmd_to_run) 
   puts
   puts '************'
   if db_to_use.changes() == 0
     # no changes made
     puts "Not so awesome: field not updated."
+    puts '************'
+    puts
+    false
   else
     puts "All is awesome: new value has been recorded."
+    puts '************'
+    puts
+    true 
   end
-  puts '************'
-  puts
+
+end
+
+def get_new_sprinting_value
+  # ask user if he or she is willing to sprint
+  # return true if yes, false if no
+  # update sprinting_okay flag
+  valid_sprint_entered = false
+  while !valid_sprint_entered
+    puts 'Are you willing to sprint? Type "yes" or "no"'
+    new_value = gets.chomp.chars.first
+    if !['y','n'].include? new_value
+      # user did not enter a valid choice
+      puts "Not one of your awesome choices. Please try again."
+    else
+      valid_sprint_entered = true
+      if new_value == 'y'
+        return true
+      else
+        return false
+      end
+    end
+  end
 end
 
 def edit_profile(db_to_use,this_user_info)
+  # ask user which field should be updated, accept new value, and update users table with new information
+  # repeat until user is done with updates
   done_editing = false
   while !done_editing
     valid_profile_action_entered = false
@@ -355,15 +387,15 @@ def edit_profile(db_to_use,this_user_info)
       puts 'Type "user name" to update user name'
       puts 'Type "password" to update password'
       puts 'Type "done" if you are done editing your profile'
-      action_requested = gets.chomp.chars.first.downcase
-      if !['h','w','s','n','u','p','d'].include? action_requested
+      action_requested = gets.chomp
+      if !['h','w','s','n','u','p','d'].include? action_requested.chars.first.downcase
         # user did not enter a valid choice
         puts "Not one of your awesome choices. Please try again."
       else
         valid_profile_action_entered = true
       end
     end
-    case action_requested
+    case action_requested.chars.first.downcase
       when 'h'
         # update time to travel from home to Bainbridge terminal
         puts "Please enter new value for time to travel from home to Bainbridge terminal:"
@@ -375,39 +407,29 @@ def edit_profile(db_to_use,this_user_info)
         new_value = gets.chomp
         update_table(db_to_use,'users','travel_time_work_to_terminal',new_value,this_user_info['uid'])
       when 's'
-        # update sprinting_okay flag
-        valid_sprint_entered = false
-        while !valid_sprint_entered
-          puts 'Are you willing to sprint? Type "yes" or "no"'
-          new_value = gets.chomp.chars.first
-          if !['y','n'].include? new_value
-            # user did not enter a valid choice
-            puts "Not one of your awesome choices. Please try again."
-          else
-            valid_sprint_entered = true
-            if new_value == 'y'
-              new_value = true
-            else
-              new_value = false
-            end
-            update_table(db_to_use,'users','sprinting_okay',new_value,this_user_info['uid'])
-          end
+        willing_to_sprint = get_new_sprinting_value
+        # convert boolean to string value
+        if willing_to_sprint
+          willing_to_sprint = 'true'
+        else
+          willing_to_sprint= 'false'
         end
+        update_table(db_to_use,'users','sprinting_okay',"'#{willing_to_sprint}'",this_user_info['uid'])
       when 'n'
         # update first name
         puts "Please enter new first name:"
         new_value = gets.chomp
-        update_table(db_to_use,'users','first_name',new_value,this_user_info['uid'])
+        update_table(db_to_use,'users','first_name',"'#{new_value}'",this_user_info['uid'])
       when 'u'
         # update user name
         puts "Please enter new user name"
         new_value = gets.chomp
-        update_table(db_to_use,'users','user_name',new_value,this_user_info['uid'])
+        update_table(db_to_use,'users','user_name',"'#{new_value}'",this_user_info['uid'])
       when 'p'
         # change password
         puts "Please enter new password"
         new_value = gets.chomp
-        update_table(db_to_use,'users','password',new_value,this_user_info['uid'])
+        update_table(db_to_use,'users','password',"'#{new_value}'",this_user_info['uid'])
       when 'd'
         # all done with profile changes
         done_editing = true
@@ -416,21 +438,52 @@ def edit_profile(db_to_use,this_user_info)
 end
 
 def display_current_profile(this_user_info)
+  # display current profile information
   puts
   puts '************'
   puts "Current Profile Information:"
   this_user_info.each do |field,value|
-    if field == 'password'
-      # don't display password
-      puts "password: XXXXXXXXXXX"
-    else
-      puts "#{field}: #{value}"
+    case field
+      when 'password'
+        # don't display XXXX's for password
+        puts "password: XXXXXXXXXXX"
+      when 'uid'
+        # don't display at all
+      else
+        if (field.is_a? Integer)
+          # don't display at all
+        else
+          puts "#{field}: #{value}"
+        end
     end
   end
   puts '************'
   puts
 end
 
+def create_new_account(db_to_use)
+  # ask user for profile values and insert record into users table
+  # OUTPUT: true if successful, false if not successful or user quits
+  puts "Please enter user name: "
+  user_name = gets.chomp
+  puts "Please enter password: "
+  password = gets.chomp
+  puts "Please enter first name: "
+  first_name = gets.chomp
+  puts "Please enter the number of minutes it takes you to walk or drive from your house to the Bainbridge ferry terminal. Include the time it takes to park and pay for parking."
+  home_to_terminal = gets.chomp.to_i
+  puts "Please enter the number of minutes it takes you to walk or bus from your workplace to Colman Dock."
+  work_to_terminal = gets.chomp.to_i
+  willing_to_sprint = get_new_sprinting_value
+  # convert boolean to string value
+  if willing_to_sprint
+    willing_to_sprint = 'true'
+  else
+    willing_to_sprint = 'false'
+  end
+  cmd_to_run = "INSERT INTO users values (null,'#{user_name}','#{first_name}',#{home_to_terminal},#{work_to_terminal},willing_to_sprint)"
+  db_to_use.execute(cmd_to_run)
+end
 ####################################################    DRIVER CODE  ###################################################################### 
 
 
@@ -448,7 +501,7 @@ valid_action_requested = false
 while !valid_action_requested 
   puts 'Type "l" to log in, "c" to create a new account, or "q" to quit.'
   action_requested = gets.chomp
-  if !['l','c','q'].include? action_requested.chars.first.downcase
+  if (!['l','c','q'].include? action_requested.chars.first.downcase)
     # user did not enter a valid choice
     puts "Not one of your awesome choices. Please try again."
   else
@@ -460,7 +513,7 @@ case action_requested.chars.first.downcase
     # quit
   when 'c'
     # create new account
-    puts 'about to create new account - insert code here'
+    create_new_account(ferry_db)
   when 'l'
     # log in to existing account
     this_user_info = log_in(ferry_db)
@@ -468,12 +521,17 @@ case action_requested.chars.first.downcase
       # log in failed
     else
       # log in successful
+      puts
+      puts "*****************"
       puts "You\'re in, baby!"
+      puts "*****************"
+      puts
       # user is now logged in - ask what he or she would like to do
       # options are:
       # "bi" = leave from Bainbridge
       # "sea" = leave from Seattle
       # "profile" = edit profile
+      # "quit" = quit
       user_requested_quit = false
       while !user_requested_quit
         valid_logged_in_action_requested = false
