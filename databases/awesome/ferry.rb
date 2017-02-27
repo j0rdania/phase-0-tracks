@@ -146,7 +146,7 @@ def minimum_travel_time_needed(
   return_interval = {
     hour: (min_travel_time_needed / 60),
     minutes: (min_travel_time_needed % 60)
-  }
+  }                              
 end
 
 def this_is_the_target_ferry?(
@@ -160,7 +160,7 @@ def this_is_the_target_ferry?(
   # if the departure hour >= EAT (earliest arrival time) hour or (the departure hour = EAT hour and the departure min >= EAT minutes), then
   # the user can catch this ferry if he or she leaves now
 
-  if (departure_hour >= earliest_hour) ||
+  if (departure_hour > earliest_hour) ||
     ((departure_hour == earliest_hour) &&
     (departure_min >= earliest_min))
     true 
@@ -185,7 +185,7 @@ def target_ferry_for_this_user(
 
   # get current hour, minute, and day of week
   now_values = current_time()
- 
+
   # calculate earliest_arrival_time_at_terminal (EAT) if user left right now
   # current time plus travel time
   earliest_possible_terminal_arrival = add_two_times(
@@ -212,7 +212,7 @@ def target_ferry_for_this_user(
                                 earliest_possible_terminal_arrival[:hour],
                                 earliest_possible_terminal_arrival[:minutes],
                                 departing_city))
-   if i == (departure_times.length - 1)
+    if i == (departure_times.length - 1)
       last_boat_reached = true
     else
       # repeat with next departure time
@@ -220,6 +220,8 @@ def target_ferry_for_this_user(
     end
   end
   if last_boat_reached 
+
+  puts "last boat just reached in target_ferry_for_this_user; i is #{i}, departure_times at i is: #{departure_times[i]}"
     # if we got all the way to the end of the array, and there were no ferries found, then we should choose
     # the first element of the array - it will be the morning ferry the next day. Note: if today is a Friday, then we will need
     # to get the weekend schedule first. Likewise, if today is a Sunday, we will need to get the weekday schedule first.
@@ -256,7 +258,12 @@ def target_ferry_for_this_user(
   else
     am_pm='AM'
   end
-  return in_hour.to_s + ':' + in_minutes.to_s + ' ' + am_pm
+  if in_minutes < 10
+    in_minutes_string='0' + in_minutes.to_s
+  else
+    in_minutes_string=in_minutes.to_s 
+  end
+  return in_hour.to_s + ':' + in_minutes_string + ' ' + am_pm
 end
 
 def log_in(db_to_use)
@@ -287,7 +294,6 @@ def log_in(db_to_use)
         end
     end
   end
-
   # get password
   valid_password_entered = false 
   reminder_email_sent = false 
@@ -355,6 +361,7 @@ case action_requested.chars.first.downcase
       # log in failed
     else
       # log in successful
+      puts "You\'re in, baby!"
       # user is now logged in - ask what he or she would like to do
       # options are:
       # "bi" = leave from Bainbridge
@@ -364,7 +371,7 @@ case action_requested.chars.first.downcase
       while !user_requested_quit
         valid_logged_in_action_requested = false
         while !valid_logged_in_action_requested
-          puts "You\'re in, baby!"
+          puts
           puts 'Type "b" to leave from Bainbrige Island'
           puts 'Type "s" to leave from Seattle'
           puts 'Type "p" to edit your profile'
@@ -387,10 +394,16 @@ case action_requested.chars.first.downcase
             end
             # determine target ferry
             target_ferry = target_ferry_for_this_user(ferry_db,this_user_info,departing_city)
-            # calculate leave time to catch target ferry
-            leave_time = add_two_times(target_ferry[:hour],target_ferry[:minutes],(target_ferry[:travel_time][:hour]),(target_ferry[:travel_time][:minutes]))
+            
+            # calculate leave time to catch target ferry, pass travel time as negative hours and negative minutes, 
+            # because we want to subtract that time from the ferry departure time to get time to leave
+            leave_time = add_two_times(target_ferry[:hour],target_ferry[:minutes],(-1 * (target_ferry[:travel_time][:hour])),( -1  * (target_ferry[:travel_time][:minutes])))
             # display results to user
-            puts "Leave at #{format_pretty_time_string(leave_time[:hour],leave_time[:minutes])} to catch the #{format_pretty_time_string(target_ferry[:hour],target_ferry[:minutes])} ferry. Happy sailing!"
+            puts
+            puts '************'
+            puts "Leave at #{format_pretty_time_string(leave_time[:hour], leave_time[:minutes])} to catch the #{format_pretty_time_string(target_ferry[:hour],target_ferry[:minutes])} ferry. Happy sailing!"
+            puts '************'
+            puts
           when 'p'
             # edit profile
             done_editing = false
@@ -409,15 +422,15 @@ case action_requested.chars.first.downcase
                   # user did not enter a valid choice
                   puts "Not one of your awesome choices. Please try again."
                 else
-                  valid_profile_action_requested = true
+                  valid_profile_action_entered = true
                 end
               end
               choose case action_requested
                 when 'h'
                   # update time to travel from home to Bainbridge terminal
                   puts "Please enter new value for time to travel from home to Bainbridge terminal:"
-                  new_value = get.chomps
-                  cmd_to_run="UPDATE users SET travel_time_house_to_terminal = #{new_value} WHERE uid = user_info['uid']"
+                  new_value = gets.chomp
+                  cmd_to_run="UPDATE users SET travel_time_house_to_terminal = #{new_value} WHERE uid = #{user_info['uid']}"
                   ferry_db.execute(cmd_to_run) 
                   if ferry_db.changes()  == 0
                     # no changes made
