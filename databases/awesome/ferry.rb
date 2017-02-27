@@ -26,6 +26,7 @@
 # later - display alerts to user (elevator out, ramp down, delayed ferries, etc.)
 # later - handle midnight boat case (0,0)
 # later - handle 7:55 ferry on Sunday mornings
+# later - add commits and rollbacks
 
 ##################   require    ###################################
 # sqlite3 will be the database that holds user and ferry data. It will also hold a satisfaction log to 
@@ -295,15 +296,15 @@ def log_in(db_to_use)
       puts 'Enter your password, type "forgot password", or type "quit"'
       password = gets.chomp
       if password.downcase == 'forgot password'
-          # handle if user forgot password
-          # if email successfully matched and email sent, set reminder_email_sent to true
-          puts "insert code here to send reminder email"
-          return nil
+        # handle if user forgot password
+        # if email successfully matched and email sent, set reminder_email_sent to true
+        puts "insert code here to send reminder email"
+        return nil
       elsif password.downcase == 'quit'
-          return nil
+        return nil
       else
         # password was entered; check validity of password 
-        if this_user_info[:password] == password
+        if this_user_info['password'] == password
           valid_password_entered = true
         else
           puts 'Invalid password. Please try again.'
@@ -314,6 +315,7 @@ def log_in(db_to_use)
   # valid user name and password entered; return user info
   return this_user_info
 end
+
 
 ####################################################    DRIVER CODE  ###################################################################### 
 
@@ -362,9 +364,13 @@ case action_requested.chars.first.downcase
       while !user_requested_quit
         valid_logged_in_action_requested = false
         while !valid_logged_in_action_requested
-          puts 'Welcome! Type "b" to leave from Bainbrige Island, "s" to leave from Seattle, "p" to edit your profile, or "q" to quit.'
+          puts "You\'re in, baby!"
+          puts 'Type "b" to leave from Bainbrige Island'
+          puts 'Type "s" to leave from Seattle'
+          puts 'Type "p" to edit your profile'
+          puts 'Type "q" to quit'
           action_requested = gets.chomp
-          if !['b','s','p'].include? action_requested.chars.first.downcase 
+          if !['b','s','p','q'].include? action_requested.chars.first.downcase 
             # user did not enter a valid choice
             puts "Not one of your awesome choices. Please try again."
           else
@@ -387,13 +393,58 @@ case action_requested.chars.first.downcase
             puts "Leave at #{format_pretty_time_string(leave_time[:hour],leave_time[:minutes])} to catch the #{format_pretty_time_string(target_ferry[:hour],target_ferry[:minutes])} ferry. Happy sailing!"
           when 'p'
             # edit profile
-            puts "insert code here to edit profile"
-          when 'q'
-            # quit
-            user_requested_quit = true
-        end
+            done_editing = false
+            while !done_editing
+              valid_profile_action_entered = false
+              while !valid_profile_action_entered
+                puts 'Type "home" to update travel time from home to Bainbridge ferry terinal'
+                puts 'Type "work" to update travel time from work to Colman Dock'
+                puts 'Type "sprint" to update sprinting_okay flag'
+                puts 'Type "name" to update first name'
+                puts 'Type "user name" to update user name'
+                puts 'Type "password" to update password'
+                puts 'Type "quit" if you are done editing your profile'
+                action_requested = gets.chomp.chars.first.downcase
+                if !['h','w','s','n','u','p','q'].include? action_requested
+                  # user did not enter a valid choice
+                  puts "Not one of your awesome choices. Please try again."
+                else
+                  valid_profile_action_requested = true
+                end
+              end
+              choose case action_requested
+                when 'h'
+                  # update time to travel from home to Bainbridge terminal
+                  puts "Please enter new value for time to travel from home to Bainbridge terminal:"
+                  new_value = get.chomps
+                  cmd_to_run="UPDATE users SET travel_time_house_to_terminal = #{new_value} WHERE uid = user_info['uid']"
+                  ferry_db.execute(cmd_to_run) 
+                  if ferry_db.changes()  == 0
+                    # no changes made
+                    puts "Not so awesome: field not updated."
+                  end
+                when 'w'
+                  # update time to travel from work to Colman Dock
+                when 's'
+                  # update sprinting_okay flag
+                when 'n'
+                  # update first name
+                when 'u'
+                  # update user name
+                when 'p'
+                  # change password
+                when 'q'
+                  # all done with profile changes
+                  done_editing = true
+              end
+
+          end
+        when 'q'
+          # user would like to quit
+          user_requested_quit = true
       end
     end
+  end
 end
 
 
