@@ -30,7 +30,6 @@ FERRY_SCHEDULE = [
   ['Bainbridge Island','M-F','15','50'],
   ['Bainbridge Island','M-F','16','35'],
   ['Bainbridge Island','M-F','17','30'],
-  ['Bainbridge Island','M-F','7','55'],
   ['Bainbridge Island','M-F','18','30'],
   ['Bainbridge Island','M-F','19','10'],
   ['Bainbridge Island','M-F','20','10'],

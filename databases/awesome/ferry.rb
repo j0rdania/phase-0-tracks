@@ -339,12 +339,10 @@ def update_table(db_to_use,table_to_update,field_to_update,new_value,primary_key
     # no changes made
     puts "Not so awesome: field not updated."
     puts '************'
-    puts
     false
   else
     puts "All is awesome: new value has been recorded."
     puts '************'
-    puts
     true 
   end
 
@@ -372,6 +370,15 @@ def get_new_sprinting_value
   end
 end
 
+def get_new_value (message_to_display,string_or_int)
+  puts message_to_display
+  if string_or_int == 'int'
+    return gets.chomp.to_i
+  else
+    return gets.chomp
+  end
+end if
+
 def edit_profile(db_to_use,this_user_info)
   # ask user which field should be updated, accept new value, and update users table with new information
   # repeat until user is done with updates
@@ -380,13 +387,13 @@ def edit_profile(db_to_use,this_user_info)
     valid_profile_action_entered = false
     while !valid_profile_action_entered
       puts
-      puts 'Type "home" to update travel time from home to Bainbridge ferry terinal'
-      puts 'Type "work" to update travel time from work to Colman Dock'
-      puts 'Type "sprint" to update sprinting_okay flag'
-      puts 'Type "name" to update first name'
-      puts 'Type "user name" to update user name'
-      puts 'Type "password" to update password'
-      puts 'Type "done" if you are done editing your profile'
+      puts 'type "home" to update travel time from home to Bainbridge ferry terinal'
+      puts 'type "work" to update travel time from work to Colman Dock'
+      puts 'type "sprint" to update sprinting_okay flag'
+      puts 'type "name" to update first name'
+      puts 'type "user name" to update user name'
+      puts 'type "password" to update password'
+      puts 'type "done" if you are done editing your profile'
       action_requested = gets.chomp
       if !['h','w','s','n','u','p','d'].include? action_requested.chars.first.downcase
         # user did not enter a valid choice
@@ -398,13 +405,11 @@ def edit_profile(db_to_use,this_user_info)
     case action_requested.chars.first.downcase
       when 'h'
         # update time to travel from home to Bainbridge terminal
-        puts "Please enter new value for time to travel from home to Bainbridge terminal:"
-        new_value = gets.chomp
+        new_value = get_new_value("Please enter new value for time to travel from home to Bainbridge terminal: ",'integer')
         update_table(db_to_use,'users','travel_time_house_to_terminal',new_value,this_user_info['uid'])
       when 'w'
         # update time to travel from work to Colman Dock
-        puts "Please enter new value for time to travel from work to Colman Dock:"
-        new_value = gets.chomp
+        new_value = get_new_value("Please enter new value for time to travel from work to Colman Dock: ",'integer')
         update_table(db_to_use,'users','travel_time_work_to_terminal',new_value,this_user_info['uid'])
       when 's'
         willing_to_sprint = get_new_sprinting_value
@@ -417,18 +422,15 @@ def edit_profile(db_to_use,this_user_info)
         update_table(db_to_use,'users','sprinting_okay',"'#{willing_to_sprint}'",this_user_info['uid'])
       when 'n'
         # update first name
-        puts "Please enter new first name:"
-        new_value = gets.chomp
+        new_value=get_new_value("Please enter new first name: ",'string')
         update_table(db_to_use,'users','first_name',"'#{new_value}'",this_user_info['uid'])
       when 'u'
         # update user name
-        puts "Please enter new user name"
-        new_value = gets.chomp
+        new_value = get_new_value("Please enter new user name: ",'string')
         update_table(db_to_use,'users','user_name',"'#{new_value}'",this_user_info['uid'])
       when 'p'
         # change password
-        puts "Please enter new password"
-        new_value = gets.chomp
+        new_value = get_new_value("Please enter new password: ",'string')
         update_table(db_to_use,'users','password',"'#{new_value}'",this_user_info['uid'])
       when 'd'
         # all done with profile changes
@@ -464,16 +466,11 @@ end
 def create_new_account(db_to_use)
   # ask user for profile values and insert record into users table
   # OUTPUT: true if successful, false if not successful or user quits
-  puts "Please enter user name: "
-  user_name = gets.chomp
-  puts "Please enter password: "
-  password = gets.chomp
-  puts "Please enter first name: "
-  first_name = gets.chomp
-  puts "Please enter the number of minutes it takes you to walk or drive from your house to the Bainbridge ferry terminal. Include the time it takes to park and pay for parking."
-  home_to_terminal = gets.chomp.to_i
-  puts "Please enter the number of minutes it takes you to walk or bus from your workplace to Colman Dock."
-  work_to_terminal = gets.chomp.to_i
+  user_name = get_new_value("Please enter user name: ",'string')
+  password = get_new_value("Please enter password: ",'string')
+  first_name = get_new_value("Please enter first name: ",'string')
+  home_to_terminal = get_new_value("Please enter the number of minutes it takes you to walk or drive from your house to the Bainbridge ferry terminal; include the time it takes to park and pay for parking): ",'int')
+  work_to_terminal = get_new_value("Please enter the number of minutes it takes you to walk or bus from your workplace to Colman Dock: ",'int')
   willing_to_sprint = get_new_sprinting_value
   # convert boolean to string value
   if willing_to_sprint
@@ -481,8 +478,9 @@ def create_new_account(db_to_use)
   else
     willing_to_sprint = 'false'
   end
-  cmd_to_run = "INSERT INTO users values (null,'#{user_name}','#{first_name}',#{home_to_terminal},#{work_to_terminal},willing_to_sprint)"
+  cmd_to_run = "INSERT INTO users values (null,'#{user_name}','#{password}','#{first_name}',#{home_to_terminal},#{work_to_terminal},'#{willing_to_sprint}')"
   db_to_use.execute(cmd_to_run)
+  puts "Your account has been created. You may now start the awesome ferry schedule utility. Happy Sailing!"
 end
 ####################################################    DRIVER CODE  ###################################################################### 
 
