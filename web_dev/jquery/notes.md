@@ -1,0 +1,13 @@
+ Jordan Levine
+ 9.3
+ jQuery
+
+ Plan:
+ What sorts of resources will help? How often should you stop and test what you just learned? Are breaks important? Make a few notes in the file on how you plan to approach the topic, and why.
+
+ 1. find (using Google) and read an overview or two of jQuery - take notes, making a list of common tasks jQuery can help with
+ 2. look at javascript/jQuery book that i bought earlier - read/skim jQuery material, taking notes
+ 3. figure out if jQuery needs to be installed (and do it, if so). Look at previous notes b/c I think I've used it once before and I think you need to reference it at the top of the javascript program.
+ 4. Make a super simple jQuery call and test it.
+ 5. until 2-hour time limit is up, try using jQuery to help with tasks listed in step 1. Test each one along the way, and experiment with different options if they look interesting.
+
