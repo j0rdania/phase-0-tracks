@@ -32,6 +32,11 @@ a:visited {
 h1 {text-align: center;
 }
 
+#follow_steps_button {
+  display: block;
+  margin: 0px auto;
+}
+
 #follow_steps {
   padding: 10px 5px 15px 20px;
   border-style: double;
