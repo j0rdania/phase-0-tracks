@@ -1,0 +1,99 @@
+subl
+
+body {
+  background: pink;
+  margin: 0 auto;
+  background-image: url("yellow.jpeg");
+}
+
+th, td, table {
+  border: 1px solid black;
+
+}
+
+th {
+  text-align: left;
+}
+
+.ways_to_get_happy {
+  max-width: 80%;
+
+}
+a { 
+  color: blue; 
+}
+
+a:visited {
+  color: red;
+}
+
+
+
+h1 {text-align: center;
+}
+
+#follow_steps {
+  padding: 10px 5px 15px 20px;
+  border-style: double;
+  border-color: blue;
+  max-width: 40%; 
+  margin-left: auto;
+  margin-right: auto;
+  font-family: "Comic Sans MS", cursive,sans-serif;
+}
+
+table {
+  margin-left: 5%;
+}
+
+div.ways_to_get_happy {
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+div.pics_and_associated_material {
+  margin-left: 12%;
+  margin-right: auto;
+  display: inline-block;
+
+}
+
+div.pics_and_associated_material_header {
+  text-align: center;
+}
+
+#header_image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+div.pics_and_associated_material_bottom {
+   vertical-align: top;
+}
+
+/*#header_image {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}*/
+
+@media screen and (max-width: 800px) {
+  div.pics_and_associated_material_bottom {
+    width: 25%;
+
+  }
+}
+@media screen and (max-width: 650px) {
+  div.pics_and_associated_material_bottom {
+    display: none;
+  }
+}
+
+#link_to_related_site {
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
