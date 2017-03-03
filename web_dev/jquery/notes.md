@@ -8,6 +8,6 @@
  1. find (using Google) and read an overview or two of jQuery - take notes, making a list of common tasks jQuery can help with
  2. look at javascript/jQuery book that i bought earlier - read/skim jQuery material, taking notes
  3. figure out if jQuery needs to be installed (and do it, if so). Look at previous notes b/c I think I've used it once before and I think you need to reference it at the top of the javascript program.
- 4. Make a super simple jQuery call and test it.
+ 4. Make a super simple jQuery call and test it. Best to start super small and make sure I have things set up right.
  5. until 2-hour time limit is up, try using jQuery to help with tasks listed in step 1. Test each one along the way, and experiment with different options if they look interesting.
 
