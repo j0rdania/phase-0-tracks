@@ -52,6 +52,15 @@ get '/contact' do
    resp
 end
 
+# write a GET route that takes a person's name as query parameter and compliments that person
+get '/great_job' do
+  if !params[:name]
+    "Good job!"
+  else
+    "Good job, #{params[:name]}!"
+  end
+end
+
 
 
 
