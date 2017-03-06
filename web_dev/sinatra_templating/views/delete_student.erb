@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Delete Student</title>
+</head>
+<body>
+  <h3>Current Students:</h3>
+  <ul>
+    <% @students.each do |student| %>
+      <li><%=student['id'] %>: <%= student['name'] %>, <%= student['age'] %>, <%= student['campus'] %></li>
+    <% end %>
+  </ul>
+    <form action="/students/delete" method="POST">
+    <input type="text" name="id" placeholder="ID">
+    <button type="submit">Delete</button>
+  </form>
+
+</body>
+</html>
