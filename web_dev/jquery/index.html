@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Let's Play With jQuery!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"> </script>
+    <script>
+    // this funciton is in document ready event so that it does not run until the page is 
+    // done loading. if the user clicks the button with the id "hide_me", the button will
+    // be hidden
+    $(document).ready(function(){
+      $("#hide_me").click(function(){
+        $(this).hide();
+      });
+    });
+    </script>
+  </head>
+  <body>
+  <p>It is fun to hide buttons. Give it a try!</p>
+  <button id="hide_me">Hide Me</button>
+  </body>
+</html>
